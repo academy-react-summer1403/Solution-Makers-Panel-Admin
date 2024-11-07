@@ -10,7 +10,7 @@ import { useParams, Link } from "react-router-dom";
 import { Row, Col, Alert } from "reactstrap";
 
 // ** User View Components
-// import UserTabs from "./Tabs";
+import UserTabs from "./Tabs";
 // import PlanCard from './PlanCard'
 import UserInfoCard from "./UserInfoCard";
 
@@ -67,7 +67,7 @@ const UserView = () => {
           {/* <PlanCard /> */}
         </Col>
         <Col xl="8" lg="7" xs={{ order: 0 }} md={{ order: 1, size: 7 }}>
-          {/* <UserTabs active={active} toggleTab={toggleTab} /> */}
+          <UserTabs active={active} toggleTab={toggleTab} />
         </Col>
       </Row>
     </div>

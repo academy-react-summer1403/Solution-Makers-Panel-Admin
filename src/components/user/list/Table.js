@@ -16,7 +16,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import instance from "../../../services/middleware";
 import AllCoursesCustomHeader from "./CustomHeader";
 import toast from "react-hot-toast";
-import Swal from "sweetalert2";
+import { showApplyChangesSwal } from "../../../utility/Utils";
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 
@@ -60,46 +60,9 @@ const CoursesListTable = () => {
   const { mutateAsync: deletionMutate } = useMutation({
     mutationFn: isDeleteCourse,
     onSuccess: () => {
-      queryClient.invalidateQueries("courses");
+      queryClient.invalidateQueries(["courses", "nums"]);
     },
   });
-
-  const showSwal = (method) =>
-    Swal.fire({
-      title: "آیا از اعمال تغییرات مطمئن هستید؟",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "بله",
-      cancelButtonText: "خیر",
-      customClass: {
-        confirmButton: "mx-1 px-2 fs-5 rounded-2",
-        cancelButton: "mx-1 px-2 fs-5 rounded-2",
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        method()
-          .then(() =>
-            Swal.fire({
-              title: "تغییرات با موفقیت اعمال شد",
-              icon: "success",
-              customClass: {
-                confirmButton: "rounded-2",
-              },
-            })
-          )
-          .catch((err) => {
-            Swal.fire({
-              title: "خطایی رخ داد",
-              icon: "error",
-              customClass: {
-                confirmButton: "rounded-2",
-              },
-            });
-          });
-      }
-    });
 
   const renderCourse = (row) => {
     if (row.tumbImageAddress) {
@@ -165,7 +128,7 @@ const CoursesListTable = () => {
               }}
               className="rounded-1"
               onClick={() =>
-                showSwal(() =>
+                showApplyChangesSwal(() =>
                   deletionMutate({ active: false, id: row.courseId })
                 )
               }
@@ -184,7 +147,7 @@ const CoursesListTable = () => {
               }}
               className="rounded-1"
               onClick={() =>
-                showSwal(() =>
+                showApplyChangesSwal(() =>
                   deletionMutate({ active: true, id: row.courseId })
                 )
               }
@@ -210,7 +173,7 @@ const CoursesListTable = () => {
               }}
               className="rounded-1"
               onClick={() => {
-                showSwal(() =>
+                showApplyChangesSwal(() =>
                   mutateAsync({ active: false, id: row.courseId })
                 );
               }}
@@ -229,7 +192,9 @@ const CoursesListTable = () => {
               }}
               className="rounded-1"
               onClick={() => {
-                showSwal(() => mutateAsync({ active: true, id: row.courseId }));
+                showApplyChangesSwal(() =>
+                  mutateAsync({ active: true, id: row.courseId })
+                );
               }}
             >
               غیر فعال
@@ -246,7 +211,7 @@ const CoursesListTable = () => {
             <DropdownToggle tag="div" className="btn btn-sm">
               <MoreHorizontal size={14} className="cursor-pointer" />
             </DropdownToggle>
-            <DropdownMenu>
+            <DropdownMenu container="body">
               <DropdownItem
                 tag={Link}
                 className="w-100"

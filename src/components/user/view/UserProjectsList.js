@@ -1,153 +1,242 @@
 // ** Reactstrap Imports
-import { Card, CardHeader, Progress } from 'reactstrap'
+import {
+  Button,
+  Card,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  UncontrolledDropdown,
+} from "reactstrap";
 
 // ** Third Party Components
-import { ChevronDown } from 'react-feather'
-import DataTable from 'react-data-table-component'
-
-// ** Custom Components
-import Avatar from '@components/avatar'
-
-// ** Label Images
-import xdLabel from '@src/assets/images/icons/brands/xd-label.png'
-import vueLabel from '@src/assets/images/icons/brands/vue-label.png'
-import htmlLabel from '@src/assets/images/icons/brands/html-label.png'
-import reactLabel from '@src/assets/images/icons/brands/react-label.png'
-import sketchLabel from '@src/assets/images/icons/brands/sketch-label.png'
+import { ChevronDown, Trash, CheckCircle, MoreHorizontal } from "react-feather";
+import DataTable from "react-data-table-component";
 
 // ** Styles
-import '@styles/react/libs/tables/react-dataTable-component.scss'
-
-const projectsArr = [
-  {
-    progress: 60,
-    hours: '210:30h',
-    progressColor: 'info',
-    totalTasks: '233/240',
-    subtitle: 'React Project',
-    title: 'BGC eCommerce App',
-    img: reactLabel
-  },
-  {
-    hours: '89h',
-    progress: 15,
-    totalTasks: '9/50',
-    progressColor: 'danger',
-    subtitle: 'UI/UX Project',
-    title: 'Falcon Logo Design',
-    img: xdLabel
-  },
-  {
-    progress: 90,
-    hours: '129:45h',
-    totalTasks: '100/190',
-    progressColor: 'success',
-    subtitle: 'Vuejs Project',
-    title: 'Dashboard Design',
-    img: vueLabel
-  },
-  {
-    hours: '45h',
-    progress: 49,
-    totalTasks: '12/86',
-    progressColor: 'warning',
-    subtitle: 'iPhone Project',
-    title: 'Foodista mobile app',
-    img: sketchLabel
-  },
-
-  {
-    progress: 73,
-    hours: '67:10h',
-    totalTasks: '234/378',
-    progressColor: 'info',
-    subtitle: 'React Project',
-    title: 'Dojo React Project',
-    img: reactLabel
-  },
-  {
-    progress: 81,
-    hours: '108:39h',
-    totalTasks: '264/537',
-    title: 'HTML Project',
-    progressColor: 'success',
-    subtitle: 'Crypto Website',
-    img: htmlLabel
-  },
-  {
-    progress: 78,
-    hours: '88:19h',
-    totalTasks: '214/627',
-    progressColor: 'success',
-    subtitle: 'Vuejs Project',
-    title: 'Vue Admin template',
-    img: vueLabel
-  }
-]
-
-export const columns = [
-  {
-    sortable: true,
-    minWidth: '300px',
-    name: 'Project',
-    selector: row => row.title,
-    cell: row => {
-      return (
-        <div className='d-flex justify-content-left align-items-center'>
-          <div className='avatar-wrapper'>
-            <Avatar className='me-1' img={row.img} alt={row.title} imgWidth='32' />
-          </div>
-          <div className='d-flex flex-column'>
-            <span className='text-truncate fw-bolder'>{row.title}</span>
-            <small className='text-muted'>{row.subtitle}</small>
-          </div>
-        </div>
-      )
-    }
-  },
-  {
-    name: 'Total Tasks',
-    selector: row => row.totalTasks
-  },
-  {
-    name: 'Progress',
-    selector: row => row.progress,
-    sortable: true,
-    cell: row => {
-      return (
-        <div className='d-flex flex-column w-100'>
-          <small className='mb-1'>{`${row.progress}%`}</small>
-          <Progress
-            value={row.progress}
-            style={{ height: '6px' }}
-            className={`w-100 progress-bar-${row.progressColor}`}
-          />
-        </div>
-      )
-    }
-  },
-  {
-    name: 'Hours',
-    selector: row => row.hours
-  }
-]
+import "@styles/react/libs/tables/react-dataTable-component.scss";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import instance from "../../../services/middleware";
+import { useParams } from "react-router-dom";
+import {
+  selectThemeColors,
+  showApplyChangesSwal,
+} from "../../../utility/Utils";
+import Select from "react-select";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const UserProjectsList = () => {
-  return (
-    <Card>
-      <CardHeader tag='h4'>User's Projects List</CardHeader>
-      <div className='react-dataTable user-view-account-projects'>
-        <DataTable
-          noHeader
-          responsive
-          columns={columns}
-          data={projectsArr}
-          className='react-dataTable'
-          sortIcon={<ChevronDown size={10} />}
-        />
-      </div>
-    </Card>
-  )
-}
+  const { courseId } = useParams();
+  const [basicModal, setBasicModal] = useState(false);
+  const [studentId, setStudentId] = useState("");
+  const [currentGroup, setCurrentGroup] = useState({
+    value: "",
+    label: "انتخاب گروه",
+    number: 0,
+  });
 
-export default UserProjectsList
+  const queryClient = useQueryClient();
+
+  const getCourseReserveList = (id) => instance.get(`/CourseReserve/${id}`);
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["courseReserveList"],
+    queryFn: () => getCourseReserveList(courseId),
+  });
+
+  const getCourseGroups = (TeacherId, CourseId) =>
+    instance.get(
+      `/CourseGroup/GetCourseGroup?TeacherId=${TeacherId}&CourseId=${CourseId}`
+    );
+
+  const courseDetails = queryClient.getQueryData(["courseDetails", courseId]);
+
+  const {
+    data: courseGroups,
+    isLoading: courseGroupsLoading,
+    error: courseGroupsError,
+    refetch,
+  } = useQuery({
+    queryKey: ["courseGroups"],
+    queryFn: () => getCourseGroups(courseDetails?.data.teacherId, courseId),
+    enabled: false,
+  });
+
+  const submitCourseReserve = (obj) =>
+    instance.post("/CourseReserve/SendReserveToCourse", obj);
+
+  const { mutateAsync: reserveCourseMutate } = useMutation({
+    mutationFn: submitCourseReserve,
+    onSuccess: () => {
+      queryClient
+        .invalidateQueries("courseReserveList")
+        .then(() => toast.success("رزرو تایید شد"));
+    },
+  });
+
+  // console.log(courseDetails?.data.teacherId);
+  // console.log(courseGroups?.data);
+
+  // console.log(data?.data);
+
+  useEffect(() => {
+    console.log(studentId);
+  }, [studentId]);
+
+  const deleteCourseReserve = (id) =>
+    instance.delete("/CourseReserve", { data: { id } });
+
+  const { mutateAsync: deletionMutate } = useMutation({
+    mutationFn: deleteCourseReserve,
+    onSuccess: () => {
+      queryClient.invalidateQueries("courseReserveList");
+    },
+  });
+
+  const columns = [
+    {
+      minWidth: "300px",
+      name: "نام رزرو کننده",
+      selector: (row) => row.studentName,
+    },
+    {
+      name: "نام دوره",
+      selector: (row) => row.courseName,
+    },
+    {
+      name: "وضعیت",
+      selector: (row) => row.accept,
+      cell: (row) => {
+        if (row.accept) {
+          return (
+            <span
+              className="rounded-2"
+              style={{
+                padding: 4,
+                backgroundColor: "#cafade",
+                color: "#28c76f",
+              }}
+            >
+              تایید شده
+            </span>
+          );
+        } else {
+          return (
+            <span
+              className="rounded-2"
+              style={{
+                padding: 4,
+                backgroundColor: "#ffdbdb",
+                color: "#ff0000",
+              }}
+            >
+              تایید نشده
+            </span>
+          );
+        }
+      },
+    },
+    {
+      name: "عملیات",
+      cell: (row) => {
+        if (!row.accept) {
+          return (
+            <div className="column-action">
+              <UncontrolledDropdown>
+                <DropdownToggle tag="div" className="btn btn-sm">
+                  <MoreHorizontal size={14} className="cursor-pointer" />
+                </DropdownToggle>
+                <DropdownMenu className="mb-4" container="body">
+                  <DropdownItem
+                    tag="span"
+                    className="w-100"
+                    onClick={() => {
+                      setStudentId(row.studentId);
+                      refetch().then(() => setBasicModal(!basicModal));
+                    }}
+                  >
+                    <CheckCircle size={14} className="me-50" />
+                    <span className="align-middle">تایید</span>
+                  </DropdownItem>
+                  <DropdownItem
+                    tag="span"
+                    className="w-100"
+                    onClick={() =>
+                      showApplyChangesSwal(() => deletionMutate(row.reserveId))
+                    }
+                  >
+                    <Trash size={14} className="me-50" />
+                    <span className="align-middle">حذف</span>
+                  </DropdownItem>
+                </DropdownMenu>
+              </UncontrolledDropdown>
+            </div>
+          );
+        }
+      },
+    },
+  ];
+
+  return (
+    <>
+      <Card>
+        <div className="react-dataTable user-view-account-projects">
+          <DataTable
+            noHeader
+            responsive
+            columns={columns}
+            data={data?.data}
+            className="react-dataTable"
+            sortIcon={<ChevronDown size={10} />}
+          />
+        </div>
+      </Card>
+      <div className="basic-modal">
+        <Modal isOpen={basicModal} toggle={() => setBasicModal(!basicModal)}>
+          <ModalHeader toggle={() => setBasicModal(!basicModal)}>
+            <span style={{ fontSize: 24 }}>لطفا گروه را انتخاب کنید</span>
+          </ModalHeader>
+          <ModalBody>
+            <Select
+              theme={selectThemeColors}
+              isClearable={false}
+              className="react-select"
+              classNamePrefix="select"
+              options={courseGroups?.data.map((group, index) => ({
+                value: group.groupId,
+                label: group.groupName,
+                number: index + 1,
+              }))}
+              value={currentGroup}
+              onChange={(data) => {
+                setCurrentGroup(data);
+                console.log(data);
+              }}
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              disabled={!currentGroup.value}
+              color="primary"
+              onClick={() =>
+                reserveCourseMutate({
+                  courseId: courseId,
+                  courseGroupId: currentGroup.value,
+                  studentId: studentId,
+                }).then(() => setBasicModal(!basicModal))
+              }
+            >
+              ثبت
+            </Button>
+          </ModalFooter>
+        </Modal>
+      </div>
+    </>
+  );
+};
+
+export default UserProjectsList;

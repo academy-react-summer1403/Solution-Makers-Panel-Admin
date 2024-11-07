@@ -55,7 +55,7 @@ const Routes = [
     element: <SecondPage />,
   },
   {
-    path: "/courses/courses-list",
+    path: "/courses",
     element: <CoursesList />,
   },
   {

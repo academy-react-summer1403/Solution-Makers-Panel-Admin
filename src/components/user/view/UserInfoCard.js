@@ -1,77 +1,92 @@
 // ** React Imports
-import { useState, Fragment } from 'react'
+import { useState, Fragment } from "react";
 
 // ** Reactstrap Imports
-import { Row, Col, Card, Form, CardBody, Button, Badge, Modal, Input, Label, ModalBody, ModalHeader } from 'reactstrap'
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  CardBody,
+  Button,
+  Badge,
+  Modal,
+  Input,
+  Label,
+  ModalBody,
+  ModalHeader,
+} from "reactstrap";
 
 // ** Third Party Components
-import Swal from 'sweetalert2'
-import Select from 'react-select'
-import { Check, Briefcase, X } from 'react-feather'
-import { useForm, Controller } from 'react-hook-form'
-import withReactContent from 'sweetalert2-react-content'
+import Swal from "sweetalert2";
+import { showApplyChangesSwal } from "../../../utility/Utils";
+import Select from "react-select";
+import { Check, Briefcase, X, Users, MessageSquare } from "react-feather";
+import { useForm, Controller } from "react-hook-form";
+import withReactContent from "sweetalert2-react-content";
 
 // ** Custom Components
-import Avatar from '@components/avatar'
+import Avatar from "@components/avatar";
 
 // ** Utils
-import { selectThemeColors } from '@utils'
+import { selectThemeColors } from "@utils";
 
 // ** Styles
-import '@styles/react/libs/react-select/_react-select.scss'
-import { useParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
-import instance from '../../../services/middleware'
+import "@styles/react/libs/react-select/_react-select.scss";
+import { useParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import instance from "../../../services/middleware";
+import toast from "react-hot-toast";
 
-const roleColors = {
-  editor: 'light-info',
-  admin: 'light-danger',
-  author: 'light-warning',
-  maintainer: 'light-success',
-  subscriber: 'light-primary'
-}
+// const roleColors = {
+//   editor: "light-info",
+//   admin: "light-danger",
+//   author: "light-warning",
+//   maintainer: "light-success",
+//   subscriber: "light-primary",
+// };
 
-const statusColors = {
-  active: 'light-success',
-  pending: 'light-warning',
-  inactive: 'light-secondary'
-}
+// const statusColors = {
+//   active: "light-success",
+//   pending: "light-warning",
+//   inactive: "light-secondary",
+// };
 
-const statusOptions = [
-  { value: 'active', label: 'Active' },
-  { value: 'inactive', label: 'Inactive' },
-  { value: 'suspended', label: 'Suspended' }
-]
+// const statusOptions = [
+//   { value: "active", label: "Active" },
+//   { value: "inactive", label: "Inactive" },
+//   { value: "suspended", label: "Suspended" },
+// ];
 
-const countryOptions = [
-  { value: 'uk', label: 'UK' },
-  { value: 'usa', label: 'USA' },
-  { value: 'france', label: 'France' },
-  { value: 'russia', label: 'Russia' },
-  { value: 'canada', label: 'Canada' }
-]
+// const countryOptions = [
+//   { value: "uk", label: "UK" },
+//   { value: "usa", label: "USA" },
+//   { value: "france", label: "France" },
+//   { value: "russia", label: "Russia" },
+//   { value: "canada", label: "Canada" },
+// ];
 
-const languageOptions = [
-  { value: 'english', label: 'English' },
-  { value: 'spanish', label: 'Spanish' },
-  { value: 'french', label: 'French' },
-  { value: 'german', label: 'German' },
-  { value: 'dutch', label: 'Dutch' }
-]
+// const languageOptions = [
+//   { value: "english", label: "English" },
+//   { value: "spanish", label: "Spanish" },
+//   { value: "french", label: "French" },
+//   { value: "german", label: "German" },
+//   { value: "dutch", label: "Dutch" },
+// ];
 
-const MySwal = withReactContent(Swal)
+const MySwal = withReactContent(Swal);
 
 const UserInfoCard = ({ selectedUser }) => {
   // ** State
-  const [show, setShow] = useState(false)
-  const {courseId} = useParams();
+  const [show, setShow] = useState(false);
+  const { courseId } = useParams();
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey : ["courseDetails", courseId],
-    queryFn : () => instance.get(`/Course/${courseId}`)
-  })
+    queryKey: ["courseDetails", courseId],
+    queryFn: () => instance.get(`/Course/${courseId}`),
+  });
 
-  console.log(data?.data);
+  // console.log(data?.data);
 
   // ** Hook
   // const {
@@ -89,187 +104,211 @@ const UserInfoCard = ({ selectedUser }) => {
   // })
 
   // ** render user img
-  const renderUserImg = () => {
-    if (data?.data !== null && data?.data.imageAddress) {
+  const renderCourseImg = (course) => {
+    if (course.data.imageAddress) {
       return (
         <img
-          height='110'
-          width='110'
-          alt='user-avatar'
-          src={data?.data.imageAddress}
-          className='img-fluid rounded mt-3 mb-2'
+          height="120"
+          width="160"
+          alt="course-image"
+          src={course.data.imageAddress}
+          className="rounded mt-3 mb-2"
         />
-      )
+      );
     } else {
       return (
-        <Avatar
-          initials
-          // color={selectedUser.avatarColor || 'light-primary'}
-          className='rounded mt-3 mb-2'
-          // content={selectedUser.fullName}
-          img="/src/assets/images/notFound/1047293-صفحه-یافت-نشد-خطای-404.jpg"
-          contentStyles={{
-            borderRadius: 0,
-            fontSize: 'calc(48px)',
-            width: '100%',
-            height: '100%'
-          }}
-          style={{
-            height: '110px',
-            width: '110px'
-          }}
+        <img
+          height="120"
+          width="160"
+          alt="course-image"
+          src="/src/assets/images/notFound/1047293-صفحه-یافت-نشد-خطای-404.jpg"
+          className="rounded mt-3 mb-2"
         />
-      )
+      );
     }
-  }
+  };
 
-  // const onSubmit = data => {
-  //   if (Object.values(data).every(field => field.length > 0)) {
-  //     setShow(false)
+  // const onSubmit = (data) => {
+  //   if (Object.values(data).every((field) => field.length > 0)) {
+  //     setShow(false);
   //   } else {
   //     for (const key in data) {
   //       if (data[key].length === 0) {
   //         setError(key, {
-  //           type: 'manual'
-  //         })
+  //           type: "manual",
+  //         });
   //       }
   //     }
   //   }
-  // }
+  // };
 
   // const handleReset = () => {
   //   reset({
   //     username: selectedUser.username,
-  //     lastName: selectedUser.fullName.split(' ')[1],
-  //     firstName: selectedUser.fullName.split(' ')[0]
-  //   })
-  // }
+  //     lastName: selectedUser.fullName.split(" ")[1],
+  //     firstName: selectedUser.fullName.split(" ")[0],
+  //   });
+  // };
 
-  // const handleSuspendedClick = () => {
-  //   return MySwal.fire({
-  //     title: 'Are you sure?',
-  //     text: "You won't be able to revert user!",
-  //     icon: 'warning',
-  //     showCancelButton: true,
-  //     confirmButtonText: 'Yes, Suspend user!',
-  //     customClass: {
-  //       confirmButton: 'btn btn-primary',
-  //       cancelButton: 'btn btn-outline-danger ms-1'
-  //     },
-  //     buttonsStyling: false
-  //   }).then(function (result) {
-  //     if (result.value) {
-  //       MySwal.fire({
-  //         icon: 'success',
-  //         title: 'Suspended!',
-  //         text: 'User has been suspended.',
-  //         customClass: {
-  //           confirmButton: 'btn btn-success'
-  //         }
-  //       })
-  //     } else if (result.dismiss === MySwal.DismissReason.cancel) {
-  //       MySwal.fire({
-  //         title: 'Cancelled',
-  //         text: 'Cancelled Suspension :)',
-  //         icon: 'error',
-  //         customClass: {
-  //           confirmButton: 'btn btn-success'
-  //         }
-  //       })
-  //     }
-  //   })
-  // }
+  const queryClient = useQueryClient();
+
+  const activateOrDeactiveCourse = (obj) =>
+    instance.put("/Course/ActiveAndDeactiveCourse", obj);
+
+  const { mutateAsync, isPending, isSuccess, isError } = useMutation({
+    mutationFn: activateOrDeactiveCourse,
+    onSuccess: () => {
+      queryClient.invalidateQueries("courseDetails");
+    },
+    onError: () => {
+      toast.error("error");
+    },
+  });
+
+  if (isLoading) {
+    return <span>loading data ....</span>;
+  }
 
   return (
     <Fragment>
-      {/* <Card>
+      <Card>
         <CardBody>
-          <div className='user-avatar-section'>
-            <div className='d-flex align-items-center flex-column'>
-              {renderUserImg()}
-              <div className='d-flex flex-column align-items-center text-center'>
-                <div className='user-info'>
-                  <h4>{selectedUser !== null ? selectedUser.fullName : 'Eleanor Aguilar'}</h4>
-                  {selectedUser !== null ? (
-                    <Badge color={roleColors[selectedUser.role]} className='text-capitalize'>
-                      {selectedUser.role}
-                    </Badge>
-                  ) : null}
+          <div className="user-avatar-section">
+            <div className="d-flex align-items-center flex-column">
+              {renderCourseImg(data)}
+              <div className="d-flex flex-column align-items-center text-center">
+                <div className="user-info">
+                  <h4>
+                    {data.data !== null ? data.data.title : "Eleanor Aguilar"}
+                  </h4>
+                  {data?.data.isActive ? (
+                    <span
+                      style={{
+                        display: "inline-flex",
+                        marginTop: "10px",
+                        padding: "5px 12px 5px 12px",
+                        backgroundColor: "#cafade",
+                        color: "#28c76f",
+                      }}
+                      className="text-capitalize rounded-2"
+                    >
+                      فعال
+                    </span>
+                  ) : (
+                    <span
+                      style={{
+                        display: "inline-flex",
+                        marginTop: "10px",
+                        padding: "5px 12px 5px 12px",
+                        backgroundColor: "#ffdbdb",
+                        color: "#ff0000",
+                      }}
+                      className="text-capitalize rounded-2"
+                    >
+                      غیر فعال
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
           </div>
-          <div className='d-flex justify-content-around my-2 pt-75'>
-            <div className='d-flex align-items-start me-2'>
-              <Badge color='light-primary' className='rounded p-75'>
-                <Check className='font-medium-2' />
+          <div className="d-flex justify-content-around my-2 pt-75">
+            <div className="d-flex align-items-start me-2">
+              <Badge color="light-primary" className="rounded p-75">
+                <Users className="font-medium-2" />
               </Badge>
-              <div className='ms-75'>
-                <h4 className='mb-0'>1.23k</h4>
-                <small>Tasks Done</small>
+              <div className="ms-75">
+                <h4 className="mb-0">{data.data.courseUserTotal}</h4>
+                <small>دانشجو</small>
               </div>
             </div>
-            <div className='d-flex align-items-start'>
-              <Badge color='light-primary' className='rounded p-75'>
-                <Briefcase className='font-medium-2' />
+            <div className="d-flex align-items-start">
+              <Badge color="light-primary" className="rounded p-75">
+                <MessageSquare className="font-medium-2" />
               </Badge>
-              <div className='ms-75'>
-                <h4 className='mb-0'>568</h4>
-                <small>Projects Done</small>
+              <div className="ms-75">
+                <h4 className="mb-0">{data.data.courseCommentTotal}</h4>
+                <small>کامنت</small>
               </div>
             </div>
           </div>
-          <h4 className='fw-bolder border-bottom pb-50 mb-1'>Details</h4>
-          <div className='info-container'>
-            {selectedUser !== null ? (
-              <ul className='list-unstyled'>
-                <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Username:</span>
-                  <span>{selectedUser.username}</span>
+          <h4 className="fw-bolder border-bottom pb-50 mb-1">جزئیات دوره</h4>
+          <div className="info-container">
+            {data.data !== null ? (
+              <ul className="list-unstyled">
+                <li className="mb-75">
+                  <span className="fw-bolder me-25">نام استاد دوره :</span>
+                  <span>{data.data.teacherName}</span>
                 </li>
-                <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Billing Email:</span>
-                  <span>{selectedUser.email}</span>
+                <li className="mb-75">
+                  <span className="fw-bolder me-25">نام کلاس :</span>
+                  <span>{data.data.courseClassRoomName}</span>
                 </li>
-                <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Status:</span>
-                  <Badge className='text-capitalize' color={statusColors[selectedUser.status]}>
-                    {selectedUser.status}
-                  </Badge>
+                <li className="mb-75">
+                  <span className="fw-bolder me-25">سطح دوره :</span>
+                  <span className="text-capitalize">
+                    {data.data.courseLevelName}
+                  </span>
                 </li>
-                <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Role:</span>
-                  <span className='text-capitalize'>{selectedUser.role}</span>
+                <li className="mb-75">
+                  <span className="fw-bolder me-25">نوع دوره :</span>
+                  <span className="text-capitalize">
+                    {data.data.courseTypeName}
+                  </span>
                 </li>
-                <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Tax ID:</span>
-                  <span>Tax-{selectedUser.contact.substr(selectedUser.contact.length - 4)}</span>
+                <li className="mb-75">
+                  <span className="fw-bolder me-25">قیمت دوره :</span>
+                  <span>{data.data.cost.toLocaleString()} تومان</span>
                 </li>
-                <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Contact:</span>
-                  <span>{selectedUser.contact}</span>
+                <li className="mb-75">
+                  <span className="fw-bolder me-25">شروع دوره :</span>
+                  <span>{data.data.startTime.slice(0, 10)}</span>
                 </li>
-                <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Language:</span>
-                  <span>English</span>
+                <li className="mb-75">
+                  <span className="fw-bolder me-25">پایان دوره :</span>
+                  <span>{data.data.endTime.slice(0, 10)}</span>
                 </li>
-                <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Country:</span>
-                  <span>England</span>
+                <li className="mb-75">
+                  <span className="fw-bolder me-25">توضیحات دوره :</span>
+                  <p>{data.data.describe}</p>
                 </li>
               </ul>
             ) : null}
           </div>
-          <div className='d-flex justify-content-center pt-2'>
-            <Button color='primary' onClick={() => setShow(true)}>
-              Edit
+          <div className="d-flex justify-content-center pt-2">
+            <Button color="primary" onClick={() => setShow(true)}>
+              ویرایش
             </Button>
-            <Button className='ms-1' color='danger' outline onClick={handleSuspendedClick}>
-              Suspended
-            </Button>
+            {data.data.isActive ? (
+              <Button
+                className="ms-1"
+                color="danger"
+                outline
+                onClick={() => {
+                  showApplyChangesSwal(() =>
+                    mutateAsync({ active: false, id: courseId })
+                  );
+                }}
+              >
+                غیر فعال کردن
+              </Button>
+            ) : (
+              <Button
+                className="ms-1"
+                color="success"
+                outline
+                onClick={() => {
+                  showApplyChangesSwal(() =>
+                    mutateAsync({ active: true, id: courseId })
+                  );
+                }}
+              >
+                فعال کردن
+              </Button>
+            )}
           </div>
         </CardBody>
-      </Card> */}
+      </Card>
       {/* <Modal isOpen={show} toggle={() => setShow(!show)} className='modal-dialog-centered modal-lg'>
         <ModalHeader className='bg-transparent' toggle={() => setShow(!show)}></ModalHeader>
         <ModalBody className='px-sm-5 pt-50 pb-5'>
@@ -429,7 +468,7 @@ const UserInfoCard = ({ selectedUser }) => {
         </ModalBody>
       </Modal> */}
     </Fragment>
-  )
-}
+  );
+};
 
-export default UserInfoCard
+export default UserInfoCard;
