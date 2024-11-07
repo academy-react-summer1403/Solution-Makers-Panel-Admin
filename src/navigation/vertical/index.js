@@ -29,7 +29,7 @@ export default [
         id: "CoursesList",
         title: "لیست دوره ها",
         icon: <Circle size={12} />,
-        navLink: "/courses/courses-list",
+        navLink: "/courses",
       },
     ],
   },

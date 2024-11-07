@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import { DefaultRoute } from "../router/routes";
 
 // ** Checks if an object is empty (returns boolean)
@@ -83,3 +84,40 @@ export const selectThemeColors = (theme) => ({
     neutral30: "#ededed", // for input hover border-color
   },
 });
+
+export const showApplyChangesSwal = (method) =>
+  Swal.fire({
+    title: "آیا از اعمال تغییرات مطمئن هستید؟",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "بله",
+    cancelButtonText: "خیر",
+    customClass: {
+      confirmButton: "mx-1 px-2 fs-5 rounded-2",
+      cancelButton: "mx-1 px-2 fs-5 rounded-2",
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      method()
+        .then(() =>
+          Swal.fire({
+            title: "تغییرات با موفقیت اعمال شد",
+            icon: "success",
+            customClass: {
+              confirmButton: "rounded-2",
+            },
+          })
+        )
+        .catch((err) => {
+          Swal.fire({
+            title: "خطایی رخ داد",
+            icon: "error",
+            customClass: {
+              confirmButton: "rounded-2",
+            },
+          });
+        });
+    }
+  });
