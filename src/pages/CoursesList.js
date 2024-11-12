@@ -1,9 +1,9 @@
-import CoursesListTable from "./Table";
+import CoursesListTable from "../components/user/list/Table";
 import { Row, Col } from "reactstrap";
 import StatsHorizontal from "@components/widgets/stats/StatsHorizontal";
 import { BookOpen, CheckCircle, Slash, MinusCircle } from "react-feather";
 import { useQuery } from "@tanstack/react-query";
-import instance from "../../../services/middleware";
+import instance from "../services/middleware";
 import "@styles/react/apps/app-users.scss";
 
 const CoursesList = () => {
@@ -74,7 +74,11 @@ const CoursesList = () => {
           />
         </Col>
       </Row>
-      <CoursesListTable />
+      <Row>
+        <Col>
+          <CoursesListTable />
+        </Col>
+      </Row>
     </div>
   );
 };

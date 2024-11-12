@@ -26,10 +26,11 @@ import {
   showApplyChangesSwal,
 } from "../../../utility/Utils";
 import Select from "react-select";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
-const UserProjectsList = () => {
+const CourseReserve = ({ toggleTab }) => {
   const { courseId } = useParams();
   const [basicModal, setBasicModal] = useState(false);
   const [studentId, setStudentId] = useState("");
@@ -77,15 +78,6 @@ const UserProjectsList = () => {
         .then(() => toast.success("رزرو تایید شد"));
     },
   });
-
-  // console.log(courseDetails?.data.teacherId);
-  // console.log(courseGroups?.data);
-
-  // console.log(data?.data);
-
-  useEffect(() => {
-    console.log(studentId);
-  }, [studentId]);
 
   const deleteCourseReserve = (id) =>
     instance.delete("/CourseReserve", { data: { id } });
@@ -156,7 +148,29 @@ const UserProjectsList = () => {
                     className="w-100"
                     onClick={() => {
                       setStudentId(row.studentId);
-                      refetch().then(() => setBasicModal(!basicModal));
+                      refetch().then(() => {
+                        if (courseGroups?.data.length > 0) {
+                          setBasicModal(!basicModal);
+                        } else {
+                          Swal.fire({
+                            title: "برای این دوره هیچ گروهی وجود نداره",
+                            text: "میخوای گروه جدید بسازی ؟",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "بله",
+                            cancelButtonText: "خیر",
+                            customClass: {
+                              confirmButton: "mx-1 px-2 fs-5 rounded-2",
+                              cancelButton: "mx-1 px-2 fs-5 rounded-2",
+                            },
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              toggleTab("3");
+                            }
+                          });
+                        }
+                      });
                     }}
                   >
                     <CheckCircle size={14} className="me-50" />
@@ -239,4 +253,4 @@ const UserProjectsList = () => {
   );
 };
 
-export default UserProjectsList;
+export default CourseReserve;

@@ -31,6 +31,12 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/courses",
       },
+      {
+        id: "AddNewCourse",
+        title: "افزودن دوره جدید",
+        icon: <Circle size={12} />,
+        navLink: "/add-course",
+      },
     ],
   },
 ];

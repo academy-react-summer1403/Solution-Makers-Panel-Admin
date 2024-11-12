@@ -1,0 +1,4 @@
+.ck-editor__editable {
+  direction: rtl;
+  min-height: 300px;
+}

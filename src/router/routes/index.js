@@ -12,7 +12,6 @@ import PublicRoute from "@components/routes/PublicRoute";
 
 // ** Utils
 import { isObjEmpty } from "@utils";
-import UserView from "../../components/user/view";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -33,7 +32,9 @@ const Register = lazy(() => import("../../pages/Register"));
 const ForgotPassword = lazy(() => import("../../pages/ForgotPassword"));
 const Error = lazy(() => import("../../pages/Error"));
 const Sample = lazy(() => import("../../pages/Sample"));
-const CoursesList = lazy(() => import("../../components/user/list"))
+const CoursesList = lazy(() => import("../../pages/CoursesList"));
+const CourseDetails = lazy(() => import("../../pages/CourseDetails"))
+const AddNewCourse = lazy(() => import("../../pages/AddNewCourse"));
 
 // ** Merge Routes
 const Routes = [
@@ -60,7 +61,11 @@ const Routes = [
   },
   {
     path: "/courses/view/:courseId",
-    element: <UserView />,
+    element: <CourseDetails />,
+  },
+  {
+    path: "/add-course",
+    element: <AddNewCourse />,
   },
   {
     path: "/login",
