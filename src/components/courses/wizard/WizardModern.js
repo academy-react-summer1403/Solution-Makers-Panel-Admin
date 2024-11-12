@@ -4,7 +4,7 @@ import EditCourseImage from "./steps-with-validation/EditCourseImage";
 import EditCourseSpecs from "./steps-with-validation/EditCourseSpecs";
 import EditCourseDetails from "./steps-with-validation/EditCourseDetails";
 
-const WizardHorizontal = () => {
+const EditCourseFormWizard = () => {
   const ref = useRef(null);
   const [stepper, setStepper] = useState(null);
   const formData = new FormData();
@@ -34,4 +34,4 @@ const WizardHorizontal = () => {
   );
 };
 
-export default WizardHorizontal;
+export default EditCourseFormWizard;

@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import * as yup from "yup";
 import { Label, Row, Col, Input, Form, Button } from "reactstrap";
 import { useEffect } from "react";
-import instance from "../../../services/middleware";
+import instance from "../../../../services/middleware";
 import { parseDate } from "@internationalized/date";
 
 const schema = yup

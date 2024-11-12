@@ -4,7 +4,7 @@ import { selectThemeColors } from "@utils";
 import { Label, Row, Col, Form, Button } from "reactstrap";
 import "@styles/react/libs/react-select/_react-select.scss";
 import { useQuery } from "@tanstack/react-query";
-import instance from "../../../services/middleware";
+import instance from "../../../../services/middleware";
 import { useParams } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { useEffect } from "react";

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Row, Col } from "reactstrap";
-import CourseDetailsTabs from "../components/user/view/Tabs";
-import CourseInfoCard from "../components/user/view/CourseInfoCard";
+import CourseDetailsTabs from "../components/courses/view/Tabs";
+import CourseInfoCard from "../components/courses/view/CourseInfoCard";
 import "@styles/react/apps/app-users.scss";
 
 const CourseDetails = () => {
