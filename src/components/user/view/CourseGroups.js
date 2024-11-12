@@ -10,7 +10,6 @@ import {
   Input,
   Modal,
   ModalBody,
-  ModalFooter,
   ModalHeader,
   UncontrolledDropdown,
 } from "reactstrap";
@@ -41,7 +40,7 @@ const schema = yup
   })
   .required();
 
-const BillingTab = () => {
+const CourseGroups = () => {
   const { courseId } = useParams();
   const [formModal, setFormModal] = useState(false);
 
@@ -148,7 +147,6 @@ const BillingTab = () => {
                 tag="span"
                 className="w-100"
                 onClick={() => {
-                  console.log(row);
                   setValue("groupName", row.groupName);
                   setValue("groupCapacity", row.groupCapacity);
                   setValue("groupId", row.groupId);
@@ -255,7 +253,6 @@ const BillingTab = () => {
               </Button>
             </Form>
           </ModalBody>
-          <ModalFooter></ModalFooter>
         </Modal>
       </div>
       <Card className="overflow-hidden">
@@ -274,4 +271,4 @@ const BillingTab = () => {
   );
 };
 
-export default BillingTab;
+export default CourseGroups;

@@ -1,24 +1,14 @@
-// ** React Imports
-import { Fragment } from "react";
-
-// ** Reactstrap Imports
 import { Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
+import { Info, Users, Grid, MessageSquare, Edit2 } from "react-feather";
+import OtherInfos from "./OtherInfos";
+import EditCourse from "./EditCourse";
+import CourseGroups from "./CourseGroups";
+import CourseComments from "./CourseComments";
+import CourseReserve from "./CourseReserve";
 
-// ** Icons Imports
-import { Info, Users, Grid, Lock, Bookmark, Bell, Link } from "react-feather";
-
-// ** User Components
-// import InvoiceList from './InvoiceList'
-import OtherInfos from "./SecurityTab";
-import Connections from "./Connections";
-import BillingPlanTab from "./BillingTab";
-// import UserTimeline from './UserTimeline'
-import Notifications from "./Notifications";
-import UserProjectsList from "./UserProjectsList";
-
-const UserTabs = ({ active, toggleTab }) => {
+const CourseDetailsTabs = ({ active, toggleTab }) => {
   return (
-    <Fragment>
+    <>
       <Nav pills className="mb-2">
         <NavItem>
           <NavLink active={active === "1"} onClick={() => toggleTab("1")}>
@@ -40,37 +30,35 @@ const UserTabs = ({ active, toggleTab }) => {
         </NavItem>
         <NavItem>
           <NavLink active={active === "4"} onClick={() => toggleTab("4")}>
-            <Bell className="font-medium-3 me-50" />
-            <span className="fw-bold">Notifications</span>
+            <MessageSquare className="font-medium-3 me-50" />
+            <span className="fw-bold">کامنت ها</span>
           </NavLink>
         </NavItem>
         <NavItem>
           <NavLink active={active === "5"} onClick={() => toggleTab("5")}>
-            <Link className="font-medium-3 me-50" />
-            <span className="fw-bold">Connections</span>
+            <Edit2 className="font-medium-3 me-50" />
+            <span className="fw-bold">ویرایش </span>
           </NavLink>
         </NavItem>
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId="1">
           <OtherInfos />
-          {/* <UserTimeline /> */}
-          {/* <InvoiceList /> */}
         </TabPane>
         <TabPane tabId="2">
-          <UserProjectsList />
+          <CourseReserve toggleTab={toggleTab} />
         </TabPane>
         <TabPane tabId="3">
-          <BillingPlanTab />
+          <CourseGroups />
         </TabPane>
-        {/* <TabPane tabId="4">
-          <Notifications />
+        <TabPane tabId="4">
+          <CourseComments />
         </TabPane>
         <TabPane tabId="5">
-          <Connections />
-        </TabPane> */}
+          <EditCourse />
+        </TabPane>
       </TabContent>
-    </Fragment>
+    </>
   );
 };
-export default UserTabs;
+export default CourseDetailsTabs;

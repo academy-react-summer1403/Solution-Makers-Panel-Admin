@@ -5,6 +5,8 @@
   "dependencies": {
     "@casl/ability": "^6.3.2",
     "@casl/react": "^3.1.0",
+    "@ckeditor/ckeditor5-build-classic": "^43.3.1",
+    "@ckeditor/ckeditor5-react": "^9.3.1",
     "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
     "@fullcalendar/core": "^5.11.0",
     "@fullcalendar/daygrid": "^5.11.0",
@@ -14,6 +16,7 @@
     "@fullcalendar/timegrid": "^5.11.0",
     "@fullcalendar/timeline": "^5.11.0",
     "@hookform/resolvers": "^2.9.11",
+    "@internationalized/date": "^3.5.6",
     "@popperjs/core": "^2.11.3",
     "@reduxjs/toolkit": "^1.2.5",
     "@tanstack/react-query": "^5.59.19",
