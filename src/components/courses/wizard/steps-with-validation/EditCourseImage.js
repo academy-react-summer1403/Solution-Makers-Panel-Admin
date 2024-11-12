@@ -1,6 +1,6 @@
 import { ArrowLeft } from "react-feather";
 import { Row, Col, Button, Form, Input } from "reactstrap";
-import instance from "../../../services/middleware";
+import instance from "../../../../services/middleware";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
