@@ -11,6 +11,10 @@ function CoursesListTopCards() {
       instance.get("/Course/CourseList?PageNumber=1&RowsOfPage=1000"),
   });
 
+  if (isLoading) {
+    return <span>loading data ...</span>
+  }
+
   return (
     <>
       <Col lg="3" sm="6">
@@ -19,7 +23,7 @@ function CoursesListTopCards() {
           statTitle="مجموع دوره های سایت"
           icon={<BookOpen size={20} />}
           renderStats={
-            <h3 className="fw-bolder mb-75">{data?.data.courseDtos.length}</h3>
+            <h3 className="fw-bolder mb-75">{data.data.courseDtos.length}</h3>
           }
         />
       </Col>
@@ -30,7 +34,7 @@ function CoursesListTopCards() {
           icon={<CheckCircle size={20} />}
           renderStats={
             <h3 className="fw-bolder mb-75">
-              {data?.data.courseDtos.filter((course) => course.isActive).length}
+              {data.data.courseDtos.filter((course) => course.isActive).length}
             </h3>
           }
         />
@@ -42,7 +46,7 @@ function CoursesListTopCards() {
           icon={<Slash size={20} />}
           renderStats={
             <h3 className="fw-bolder mb-75">
-              {data?.data.courseDtos.filter((course) => course.isExpire).length}
+              {data.data.courseDtos.filter((course) => course.isExpire).length}
             </h3>
           }
         />
@@ -54,7 +58,7 @@ function CoursesListTopCards() {
           icon={<MinusCircle size={20} />}
           renderStats={
             <h3 className="fw-bolder mb-75">
-              {data?.data.courseDtos.filter((course) => course.isdelete).length}
+              {data.data.courseDtos.filter((course) => course.isdelete).length}
             </h3>
           }
         />
