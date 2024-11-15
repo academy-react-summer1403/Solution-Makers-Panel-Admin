@@ -10,8 +10,8 @@ const App = () => {
   useEffect(() => {
     axios
       .post("https://classapi.sepehracademy.ir/api/Sign/Login", {
-        phoneOrGmail: "masg1377@gmail.com",
-        password: "123456",
+        phoneOrGmail: "sobhanarab30@gmail.com",
+        password: "12345678",
         rememberMe: true,
       })
       .then((res) => {
