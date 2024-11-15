@@ -5,6 +5,7 @@ import "@styles/react/libs/react-select/_react-select.scss";
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import instance from "../../../services/middleware";
+import { getCourseByIdAdmin } from "../../../services/api/Courses";
 import toast from "react-hot-toast";
 
 const CourseInfoCard = () => {
@@ -12,7 +13,7 @@ const CourseInfoCard = () => {
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["courseDetails", courseId],
-    queryFn: () => instance.get(`/Course/${courseId}`),
+    queryFn: () => getCourseByIdAdmin(courseId),
   });
 
   const renderCourseImg = (course) => {
