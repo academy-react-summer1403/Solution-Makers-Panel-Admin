@@ -251,10 +251,7 @@ function ReserveListTable() {
                 number: index + 1,
               }))}
               value={currentGroup}
-              onChange={(data) => {
-                console.log(data);
-                setCurrentGroup(data);
-              }}
+              onChange={(data) => setCurrentGroup(data)}
             />
           </ModalBody>
           <ModalFooter>
