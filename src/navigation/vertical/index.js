@@ -1,4 +1,4 @@
-import { Home, Airplay, Circle, BookOpen } from "react-feather";
+import { Home, Airplay, Circle, BookOpen, Users } from "react-feather";
 
 export default [
   {
@@ -19,6 +19,12 @@ export default [
         navLink: "/apps/invoice/list",
       },
     ],
+  },
+  {
+    id: "UsersPage",
+    title: "مدیریت کاربران",
+    icon: <Users size={20} />,
+    navLink: "/users",
   },
   {
     id: "CoursesPage",
