@@ -21,9 +21,11 @@ import { FileText, Trash, MoreHorizontal } from "react-feather";
 import UsersCustomHeader from "./CustomHeader";
 import { selectThemeColors } from "../../../utility/Utils";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 function UsersListTable() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [currentRole, setCurrentRole] = useState({
@@ -80,10 +82,6 @@ function UsersListTable() {
   useEffect(() => {
     refetch();
   }, [currentPage, currentRole, currentStatus]);
-
-  //   console.log(data?.data.listUser);
-  //   console.log(data?.data.totalCount);
-  //   console.log(data?.data);
 
   const columns = [
     {
@@ -149,9 +147,14 @@ function UsersListTable() {
               <MoreHorizontal size={14} className="cursor-pointer" />
             </DropdownToggle>
             <DropdownMenu container="body">
-              <DropdownItem className="w-100" onClick={() => console.log(row.id)}>
+              <DropdownItem
+                className="w-100"
+                onClick={() => navigate(`/users/view/${row.id}`)}
+              >
                 <FileText size={14} className="me-50" />
-                <span className="align-middle">جزئیات</span>
+                <span to={`/users/view/${row.id}`} className="align-middle">
+                  جزئیات
+                </span>
               </DropdownItem>
               <DropdownItem
                 className="w-100"
@@ -217,33 +220,7 @@ function UsersListTable() {
                   setCurrentRole(data);
                 }}
               />
-            </Col>
-            {/* <Col className='my-md-0 my-1' md='4'>
-              <Label for='plan-select'>Plan</Label>
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className='react-select'
-                classNamePrefix='select'
-                options={planOptions}
-                value={currentPlan}
-                onChange={data => {
-                  setCurrentPlan(data)
-                  dispatch(
-                    getData({
-                      sort,
-                      sortColumn,
-                      q: searchTerm,
-                      page: currentPage,
-                      perPage: rowsPerPage,
-                      role: currentRole.value,
-                      currentPlan: data.value,
-                      status: currentStatus.value
-                    })
-                  )
-                }}
-              />
-            </Col> */}
+            </Col>  
             <Col md="6">
               <Label for="status-select">وضعیت</Label>
               <Select

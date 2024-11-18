@@ -60,146 +60,144 @@ const CourseInfoCard = () => {
   }
 
   return (
-    <>
-      <Card>
-        <CardBody>
-          <div className="user-avatar-section">
-            <div className="d-flex align-items-center flex-column">
-              {renderCourseImg(data)}
-              <div className="d-flex flex-column align-items-center text-center">
-                <div className="user-info">
-                  <h4>
-                    {data.data !== null ? data.data.title : "Eleanor Aguilar"}
-                  </h4>
-                  {data?.data.isActive ? (
-                    <span
-                      style={{
-                        display: "inline-flex",
-                        marginTop: "10px",
-                        padding: "5px 12px 5px 12px",
-                        backgroundColor: "#cafade",
-                        color: "#28c76f",
-                      }}
-                      className="text-capitalize rounded-2"
-                    >
-                      فعال
-                    </span>
-                  ) : (
-                    <span
-                      style={{
-                        display: "inline-flex",
-                        marginTop: "10px",
-                        padding: "5px 12px 5px 12px",
-                        backgroundColor: "#ffdbdb",
-                        color: "#ff0000",
-                      }}
-                      className="text-capitalize rounded-2"
-                    >
-                      غیر فعال
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="d-flex justify-content-around my-2 pt-75">
-            <div className="d-flex align-items-start me-2">
-              <Badge color="light-primary" className="rounded p-75">
-                <Users className="font-medium-2" />
-              </Badge>
-              <div className="ms-75">
-                <h4 className="mb-0">{data.data.courseUserTotal}</h4>
-                <small>دانشجو</small>
-              </div>
-            </div>
-            <div className="d-flex align-items-start">
-              <Badge color="light-primary" className="rounded p-75">
-                <MessageSquare className="font-medium-2" />
-              </Badge>
-              <div className="ms-75">
-                <h4 className="mb-0">{data.data.courseCommentTotal}</h4>
-                <small>کامنت</small>
-              </div>
-            </div>
-          </div>
-          <h4 className="fw-bolder border-bottom pb-50 mb-1">جزئیات دوره</h4>
-          <div className="info-container">
-            {data.data !== null ? (
-              <ul className="list-unstyled">
-                <li className="mb-75">
-                  <span className="fw-bolder me-25">نام استاد دوره :</span>
-                  <span>{data.data.teacherName}</span>
-                </li>
-                <li className="mb-75">
-                  <span className="fw-bolder me-25">نام کلاس :</span>
-                  <span>{data.data.courseClassRoomName}</span>
-                </li>
-                <li className="mb-75">
-                  <span className="fw-bolder me-25">سطح دوره :</span>
-                  <span className="text-capitalize">
-                    {data.data.courseLevelName}
+    <Card>
+      <CardBody>
+        <div className="user-avatar-section">
+          <div className="d-flex align-items-center flex-column">
+            {renderCourseImg(data)}
+            <div className="d-flex flex-column align-items-center text-center">
+              <div className="user-info">
+                <h4>
+                  {data.data !== null ? data.data.title : "Eleanor Aguilar"}
+                </h4>
+                {data?.data.isActive ? (
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      marginTop: "10px",
+                      padding: "5px 12px 5px 12px",
+                      backgroundColor: "#cafade",
+                      color: "#28c76f",
+                    }}
+                    className="text-capitalize rounded-2"
+                  >
+                    فعال
                   </span>
-                </li>
-                <li className="mb-75">
-                  <span className="fw-bolder me-25">نوع دوره :</span>
-                  <span className="text-capitalize">
-                    {data.data.courseTypeName}
+                ) : (
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      marginTop: "10px",
+                      padding: "5px 12px 5px 12px",
+                      backgroundColor: "#ffdbdb",
+                      color: "#ff0000",
+                    }}
+                    className="text-capitalize rounded-2"
+                  >
+                    غیر فعال
                   </span>
-                </li>
-                <li className="mb-75">
-                  <span className="fw-bolder me-25">قیمت دوره :</span>
-                  <span>{data.data.cost.toLocaleString()} تومان</span>
-                </li>
-                <li className="mb-75">
-                  <span className="fw-bolder me-25">شروع دوره :</span>
-                  <span>{data.data.startTime.slice(0, 10)}</span>
-                </li>
-                <li className="mb-75">
-                  <span className="fw-bolder me-25">پایان دوره :</span>
-                  <span>{data.data.endTime.slice(0, 10)}</span>
-                </li>
-                <li className="mb-75">
-                  <span className="fw-bolder me-25">توضیحات دوره :</span>
-                  <div
-                    dangerouslySetInnerHTML={{ __html: data.data.describe }}
-                  ></div>
-                </li>
-              </ul>
-            ) : null}
+                )}
+              </div>
+            </div>
           </div>
-          <div className="d-flex justify-content-center pt-2">
-            <Button color="primary">ویرایش</Button>
-            {data.data.isActive ? (
-              <Button
-                className="ms-1"
-                color="danger"
-                outline
-                onClick={() => {
-                  showApplyChangesSwal(() =>
-                    mutateAsync({ active: false, id: courseId })
-                  );
-                }}
-              >
-                غیر فعال کردن
-              </Button>
-            ) : (
-              <Button
-                className="ms-1"
-                color="success"
-                outline
-                onClick={() => {
-                  showApplyChangesSwal(() =>
-                    mutateAsync({ active: true, id: courseId })
-                  );
-                }}
-              >
-                فعال کردن
-              </Button>
-            )}
+        </div>
+        <div className="d-flex justify-content-around my-2 pt-75">
+          <div className="d-flex align-items-start me-2">
+            <Badge color="light-primary" className="rounded p-75">
+              <Users className="font-medium-2" />
+            </Badge>
+            <div className="ms-75">
+              <h4 className="mb-0">{data.data.courseUserTotal}</h4>
+              <small>دانشجو</small>
+            </div>
           </div>
-        </CardBody>
-      </Card>
-    </>
+          <div className="d-flex align-items-start">
+            <Badge color="light-primary" className="rounded p-75">
+              <MessageSquare className="font-medium-2" />
+            </Badge>
+            <div className="ms-75">
+              <h4 className="mb-0">{data.data.courseCommentTotal}</h4>
+              <small>کامنت</small>
+            </div>
+          </div>
+        </div>
+        <h4 className="fw-bolder border-bottom pb-50 mb-1">جزئیات دوره</h4>
+        <div className="info-container">
+          {data.data !== null ? (
+            <ul className="list-unstyled">
+              <li className="mb-75">
+                <span className="fw-bolder me-25">نام استاد دوره :</span>
+                <span>{data.data.teacherName}</span>
+              </li>
+              <li className="mb-75">
+                <span className="fw-bolder me-25">نام کلاس :</span>
+                <span>{data.data.courseClassRoomName}</span>
+              </li>
+              <li className="mb-75">
+                <span className="fw-bolder me-25">سطح دوره :</span>
+                <span className="text-capitalize">
+                  {data.data.courseLevelName}
+                </span>
+              </li>
+              <li className="mb-75">
+                <span className="fw-bolder me-25">نوع دوره :</span>
+                <span className="text-capitalize">
+                  {data.data.courseTypeName}
+                </span>
+              </li>
+              <li className="mb-75">
+                <span className="fw-bolder me-25">قیمت دوره :</span>
+                <span>{data.data.cost.toLocaleString()} تومان</span>
+              </li>
+              <li className="mb-75">
+                <span className="fw-bolder me-25">شروع دوره :</span>
+                <span>{data.data.startTime.slice(0, 10)}</span>
+              </li>
+              <li className="mb-75">
+                <span className="fw-bolder me-25">پایان دوره :</span>
+                <span>{data.data.endTime.slice(0, 10)}</span>
+              </li>
+              <li className="mb-75">
+                <span className="fw-bolder me-25">توضیحات دوره :</span>
+                <div
+                  dangerouslySetInnerHTML={{ __html: data.data.describe }}
+                ></div>
+              </li>
+            </ul>
+          ) : null}
+        </div>
+        <div className="d-flex justify-content-center pt-2">
+          <Button color="primary">ویرایش</Button>
+          {data.data.isActive ? (
+            <Button
+              className="ms-1"
+              color="danger"
+              outline
+              onClick={() => {
+                showApplyChangesSwal(() =>
+                  mutateAsync({ active: false, id: courseId })
+                );
+              }}
+            >
+              غیر فعال کردن
+            </Button>
+          ) : (
+            <Button
+              className="ms-1"
+              color="success"
+              outline
+              onClick={() => {
+                showApplyChangesSwal(() =>
+                  mutateAsync({ active: true, id: courseId })
+                );
+              }}
+            >
+              فعال کردن
+            </Button>
+          )}
+        </div>
+      </CardBody>
+    </Card>
   );
 };
 
