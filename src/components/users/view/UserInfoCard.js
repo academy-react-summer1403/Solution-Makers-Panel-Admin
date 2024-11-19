@@ -4,7 +4,7 @@ import { Badge, Button, Card, CardBody } from "reactstrap";
 import instance from "../../../services/middleware";
 import { useParams } from "react-router-dom";
 
-function UserInfoCard() {
+function UserInfoCard({ toggleTab }) {
   const { userId } = useParams();
 
   const getUserById = (userId) => instance.get(`/User/UserDetails/${userId}`);
@@ -13,8 +13,6 @@ function UserInfoCard() {
     queryKey: ["userDetails"],
     queryFn: () => getUserById(userId),
   });
-
-//   console.log(data?.data);
 
   if (isLoading) {
     return <p>loading data ...</p>;
@@ -159,7 +157,9 @@ function UserInfoCard() {
           ) : null}
         </div>
         <div className="d-flex justify-content-center pt-2">
-          <Button color="primary">ویرایش</Button>
+          <Button color="primary" onClick={() => toggleTab("6")}>
+            ویرایش
+          </Button>
           {data.data.active ? (
             <Button
               className="ms-1"
