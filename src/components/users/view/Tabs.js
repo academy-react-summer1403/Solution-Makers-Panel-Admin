@@ -1,10 +1,18 @@
 import { Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
-import { BookOpen, Book, MessageSquare, Info, Link } from "react-feather";
+import {
+  BookOpen,
+  Book,
+  MessageSquare,
+  Info,
+  Link,
+  Edit2,
+} from "react-feather";
 import UserCourses from "./UserCourses";
 import UserReserveCourses from "./UserReserveCourses";
 import UserComments from "./UserComments";
 import UserOtherInfos from "./OtherInfos";
 import UserConnections from "./UserConnections";
+import EditUser from "./EditUser";
 
 function UserDetailsTabs({ active, toggleTab }) {
   return (
@@ -40,6 +48,12 @@ function UserDetailsTabs({ active, toggleTab }) {
             <span className="fw-bold">ارتباط با کاربر</span>
           </NavLink>
         </NavItem>
+        <NavItem>
+          <NavLink active={active === "6"} onClick={() => toggleTab("6")}>
+            <Edit2 className="font-medium-3 me-50" />
+            <span className="fw-bold">ویرایش</span>
+          </NavLink>
+        </NavItem>
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId="1">
@@ -56,6 +70,9 @@ function UserDetailsTabs({ active, toggleTab }) {
         </TabPane>
         <TabPane tabId="5">
           <UserConnections />
+        </TabPane>
+        <TabPane tabId="6">
+          <EditUser />
         </TabPane>
       </TabContent>
     </>
