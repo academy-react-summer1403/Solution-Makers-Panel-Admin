@@ -1,4 +1,11 @@
-import { Home, Airplay, Circle, BookOpen, Users } from "react-feather";
+import {
+  Home,
+  Airplay,
+  Circle,
+  BookOpen,
+  Users,
+  MessageCircle,
+} from "react-feather";
 
 export default [
   {
@@ -50,5 +57,11 @@ export default [
         navLink: "/add-course",
       },
     ],
+  },
+  {
+    id: "CommentsPage",
+    title: "مدیریت کامنت ها",
+    icon: <MessageCircle size={20} />,
+    navLink: "/comments",
   },
 ];
