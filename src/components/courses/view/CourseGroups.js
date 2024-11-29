@@ -13,7 +13,6 @@ import {
   ModalHeader,
   UncontrolledDropdown,
 } from "reactstrap";
-import instance from "../../../services/middleware";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -22,6 +21,12 @@ import * as yup from "yup";
 import { Edit2, MoreHorizontal, Trash } from "react-feather";
 import { showApplyChangesSwal } from "../../../utility/Utils";
 import toast from "react-hot-toast";
+import {
+  createNewCourseGroup,
+  deleteCourseGroup,
+  editCourseGroup,
+  getCourseGroups,
+} from "../../../services/api/Courses";
 
 const schema = yup
   .object({
@@ -62,24 +67,6 @@ const CourseGroups = () => {
   });
 
   const queryClient = useQueryClient();
-
-  const getCourseGroups = (TeacherId, CourseId) =>
-    instance.get(
-      `/CourseGroup/GetCourseGroup?TeacherId=${TeacherId}&CourseId=${CourseId}`
-    );
-
-  const deleteCourseGroup = (id) => {
-    const formData = new FormData();
-    formData.append("Id", id);
-    return instance.delete("/CourseGroup", {
-      data: formData,
-    });
-  };
-
-  const createNewCourseGroup = (formData) =>
-    instance.post("/CourseGroup", formData);
-
-  const editCourseGroup = (formData) => instance.put("/CourseGroup", formData);
 
   const courseDetails = queryClient.getQueryData(["courseDetails", courseId]);
 
@@ -176,7 +163,11 @@ const CourseGroups = () => {
   ];
 
   if (isLoading) {
-    return <span>loading data ....</span>;
+    return <span>loading data ....</span>
+  }
+
+  if (error) {
+    return <span>خطا در دریافت اطلاعات</span>
   }
 
   return (

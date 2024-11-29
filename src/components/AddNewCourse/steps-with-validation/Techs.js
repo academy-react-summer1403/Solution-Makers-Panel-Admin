@@ -8,6 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { getCreateCourse } from "../../../services/api/Courses";
 
 const schema = yup.object({
   Techs: yup.array().min(1, "حداقل یک تکنولوژی را انتخاب کنید"),
@@ -27,8 +28,6 @@ function Techs({ stepper, courseId }) {
   });
 
   const navigate = useNavigate();
-
-  const getCreateCourse = () => instance.get("/Course/GetCreate");
 
   const addCourseTechnology = (techs) =>
     instance.post(`/Course/AddCourseTechnology?courseId=${courseId}`, techs);

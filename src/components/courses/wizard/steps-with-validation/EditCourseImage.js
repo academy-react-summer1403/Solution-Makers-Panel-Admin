@@ -1,16 +1,12 @@
 import { ArrowLeft } from "react-feather";
 import { Row, Col, Button, Form, Input } from "reactstrap";
-import instance from "../../../../services/middleware";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import { editCourse, getCourseByIdAdmin } from "../../../../services/api/Courses";
 
 const EditCourseImage = ({ stepper, formData }) => {
   const { courseId } = useParams();
-
-  const getCourseByIdAdmin = (courseId) => instance.get(`/Course/${courseId}`);
-
-  const editCourse = (formData) => instance.put("/Course", formData);
 
   const queryClient = useQueryClient();
 

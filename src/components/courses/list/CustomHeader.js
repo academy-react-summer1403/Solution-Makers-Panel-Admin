@@ -1,6 +1,7 @@
 import { Button, Col, Input, Row } from "reactstrap";
 import { selectThemeColors } from "@utils";
 import Select from "react-select";
+import { useNavigate } from "react-router-dom";
 
 function AllCoursesCustomHeader({
   searchTerm,
@@ -9,6 +10,7 @@ function AllCoursesCustomHeader({
   setCurrentStatus,
   refetch,
 }) {
+  const navigate = useNavigate();
   const statusOptions = [
     { value: "", label: "مرتب سازی", number: 0 },
     { value: "active", label: "دوره های فعال", number: 2 },
@@ -48,14 +50,15 @@ function AllCoursesCustomHeader({
             classNamePrefix="select"
             options={statusOptions}
             value={currentStatus}
-            onChange={(data) => {
-              setCurrentStatus(data);
-              console.log(data);
-            }}
+            onChange={(data) => setCurrentStatus(data)}
           />
 
           <div className="d-flex align-items-center table-header-actions">
-            <Button className="add-new-user" color="primary">
+            <Button
+              className="add-new-user"
+              color="primary"
+              onClick={() => navigate("/add-course")}
+            >
               ساخت دوره جدید
             </Button>
           </div>

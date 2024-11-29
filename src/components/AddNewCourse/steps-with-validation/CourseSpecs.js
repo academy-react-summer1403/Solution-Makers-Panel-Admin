@@ -4,10 +4,10 @@ import { selectThemeColors } from "@utils";
 import { Label, Row, Col, Form, Button } from "reactstrap";
 import "@styles/react/libs/react-select/_react-select.scss";
 import { useQuery } from "@tanstack/react-query";
-import instance from "../../../services/middleware";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { getCreateCourse } from "../../../services/api/Courses";
 
 const schema = yup.object().shape({
   Trem: yup
@@ -43,7 +43,6 @@ const schema = yup.object().shape({
 });
 
 const CourseSpecs = ({ stepper, formData }) => {
-  const getCreateCourse = () => instance.get("/Course/GetCreate");
 
   const {
     control,

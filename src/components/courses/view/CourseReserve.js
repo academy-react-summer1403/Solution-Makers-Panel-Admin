@@ -1,4 +1,3 @@
-// ** Reactstrap Imports
 import {
   Button,
   Card,
@@ -11,15 +10,10 @@ import {
   ModalFooter,
   UncontrolledDropdown,
 } from "reactstrap";
-
-// ** Third Party Components
 import { ChevronDown, Trash, CheckCircle, MoreHorizontal } from "react-feather";
 import DataTable from "react-data-table-component";
-
-// ** Styles
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import instance from "../../../services/middleware";
 import { useParams } from "react-router-dom";
 import {
   selectThemeColors,
@@ -29,6 +23,12 @@ import Select from "react-select";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
+import {
+  deleteCourseReserve,
+  getCourseGroups,
+  getCourseReserveList,
+  submitCourseReserve,
+} from "../../../services/api/Courses";
 
 const CourseReserve = ({ toggleTab }) => {
   const { courseId } = useParams();
@@ -42,17 +42,10 @@ const CourseReserve = ({ toggleTab }) => {
 
   const queryClient = useQueryClient();
 
-  const getCourseReserveList = (id) => instance.get(`/CourseReserve/${id}`);
-
   const { data, isLoading, error } = useQuery({
     queryKey: ["courseReserveList"],
     queryFn: () => getCourseReserveList(courseId),
   });
-
-  const getCourseGroups = (TeacherId, CourseId) =>
-    instance.get(
-      `/CourseGroup/GetCourseGroup?TeacherId=${TeacherId}&CourseId=${CourseId}`
-    );
 
   const courseDetails = queryClient.getQueryData(["courseDetails", courseId]);
 
@@ -67,9 +60,6 @@ const CourseReserve = ({ toggleTab }) => {
     enabled: false,
   });
 
-  const submitCourseReserve = (obj) =>
-    instance.post("/CourseReserve/SendReserveToCourse", obj);
-
   const { mutateAsync: reserveCourseMutate } = useMutation({
     mutationFn: submitCourseReserve,
     onSuccess: () => {
@@ -77,16 +67,15 @@ const CourseReserve = ({ toggleTab }) => {
         .invalidateQueries("courseReserveList")
         .then(() => toast.success("رزرو تایید شد"));
     },
+    onError: () => toast.error("خطایی رخ داد"),
   });
-
-  const deleteCourseReserve = (id) =>
-    instance.delete("/CourseReserve", { data: { id } });
 
   const { mutateAsync: deletionMutate } = useMutation({
     mutationFn: deleteCourseReserve,
     onSuccess: () => {
       queryClient.invalidateQueries("courseReserveList");
     },
+    onError: () => toast.error("خطایی رخ داد"),
   });
 
   const columns = [
@@ -194,6 +183,10 @@ const CourseReserve = ({ toggleTab }) => {
       },
     },
   ];
+
+  if (error) {
+    return <span>خطا در دریافت اطلاعات</span>;
+  }
 
   return (
     <>

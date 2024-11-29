@@ -4,8 +4,10 @@ import { Users, MessageSquare } from "react-feather";
 import "@styles/react/libs/react-select/_react-select.scss";
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import instance from "../../../services/middleware";
-import { getCourseByIdAdmin } from "../../../services/api/Courses";
+import {
+  activateOrDeactiveCourse,
+  getCourseByIdAdmin,
+} from "../../../services/api/Courses";
 import toast from "react-hot-toast";
 
 const CourseInfoCard = () => {
@@ -42,9 +44,6 @@ const CourseInfoCard = () => {
 
   const queryClient = useQueryClient();
 
-  const activateOrDeactiveCourse = (obj) =>
-    instance.put("/Course/ActiveAndDeactiveCourse", obj);
-
   const { mutateAsync, isPending, isSuccess, isError } = useMutation({
     mutationFn: activateOrDeactiveCourse,
     onSuccess: () => {
@@ -56,7 +55,11 @@ const CourseInfoCard = () => {
   });
 
   if (isLoading) {
-    return <span>loading data ....</span>;
+    return <span>loading data ....</span>
+  }
+
+  if (error) {
+    return <span>خطا در دریافت اطلاعات</span>
   }
 
   return (
