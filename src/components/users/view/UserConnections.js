@@ -2,13 +2,11 @@ import { Card, CardBody, CardTitle } from "reactstrap";
 import Telegram from "@src/assets/images/logo/Telegram.png";
 import Linkedin from "@src/assets/images/logo/Linkedin.png";
 import { useParams } from "react-router-dom";
-import instance from "../../../services/middleware";
 import { useQuery } from "@tanstack/react-query";
+import { getUserById } from "../../../services/api/Users";
 
 function UserConnections() {
   const { userId } = useParams();
-
-  const getUserById = (userId) => instance.get(`/User/UserDetails/${userId}`);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["userDetails"],
@@ -17,6 +15,10 @@ function UserConnections() {
 
   if (isLoading) {
     return <p>loading data ...</p>;
+  }
+
+  if (error) {
+    return <span>خطا در دریافت اطلاعات</span>
   }
 
   return (

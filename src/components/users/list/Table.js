@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import instance from "../../../services/middleware";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Card,
@@ -22,6 +21,11 @@ import UsersCustomHeader from "./CustomHeader";
 import { selectThemeColors } from "../../../utility/Utils";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import {
+  deleteUser,
+  getUsersList,
+  reverseToActiveUser,
+} from "../../../services/api/Users";
 
 function UsersListTable() {
   const queryClient = useQueryClient();
@@ -37,28 +41,10 @@ function UsersListTable() {
     label: "انتخاب کنید",
   });
 
-  const getUsersList = () =>
-    instance.get(
-      `/User/UserMannage?PageNumber=${currentPage}&RowsOfPage=10&SortingCol=DESC&SortType=InsertDate${
-        searchTerm ? `&Query=${searchTerm}` : ""
-      }${currentRole.value ? `&roleId=${currentRole.value}` : ""}${
-        currentStatus.value ? `&IsActiveUser=${currentStatus.value}` : ""
-      }`
-    );
-
-  const reverseToActiveUser = (userId) =>
-    instance.put("/User/ReverseToActiveUser", {
-      userId,
-    });
-
-  const deleteUser = (userId) =>
-    instance.delete("/User/DeleteUser", {
-      data: { userId },
-    });
-
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["users"],
-    queryFn: getUsersList,
+    queryFn: () =>
+      getUsersList(currentPage, searchTerm, currentRole, currentStatus),
   });
 
   const { mutateAsync: deleteUserMutate } = useMutation({
@@ -195,6 +181,10 @@ function UsersListTable() {
     );
   };
 
+  if (error) {
+    return <span>خطا در دریافت اطلاعات</span>;
+  }
+
   return (
     <>
       <Card>
@@ -220,7 +210,7 @@ function UsersListTable() {
                   setCurrentRole(data);
                 }}
               />
-            </Col>  
+            </Col>
             <Col md="6">
               <Label for="status-select">وضعیت</Label>
               <Select

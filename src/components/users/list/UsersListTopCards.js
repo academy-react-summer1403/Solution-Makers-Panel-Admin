@@ -1,17 +1,18 @@
 import { Col } from "reactstrap";
 import StatsHorizontal from "@components/widgets/stats/StatsHorizontal";
-import { User, UserPlus, UserCheck, UserX } from "react-feather";
+import { User } from "react-feather";
 import { useQuery } from "@tanstack/react-query";
-import instance from "../../../services/middleware";
+import { getUsersStatistics } from "../../../services/api/Users";
 
 function UsersListTopCards() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["usersStatistics"],
-    queryFn: () =>
-      instance.get(`/User/UserMannage?PageNumber=1&RowsOfPage=1000`),
+    queryFn: getUsersStatistics,
   });
 
-  console.log(data?.data);
+  if (error) {
+    return <span>خطا در دریافت اطلاعات</span>
+  }
 
   return (
     <>
@@ -32,7 +33,13 @@ function UsersListTopCards() {
           icon={<User size={20} />}
           renderStats={
             <h3 className="fw-bolder mb-75">
-              {data?.data.listUser.filter((user) => user.userRoles != null && user.userRoles.includes("Administrator") ).length}
+              {
+                data?.data.listUser.filter(
+                  (user) =>
+                    user.userRoles != null &&
+                    user.userRoles.includes("Administrator")
+                ).length
+              }
             </h3>
           }
         />
@@ -44,7 +51,12 @@ function UsersListTopCards() {
           icon={<User size={20} />}
           renderStats={
             <h3 className="fw-bolder mb-75">
-              {data?.data.listUser.filter((user) => user.userRoles != null && user.userRoles.includes("Teacher") ).length}
+              {
+                data?.data.listUser.filter(
+                  (user) =>
+                    user.userRoles != null && user.userRoles.includes("Teacher")
+                ).length
+              }
             </h3>
           }
         />
@@ -56,7 +68,12 @@ function UsersListTopCards() {
           icon={<User size={20} />}
           renderStats={
             <h3 className="fw-bolder mb-75">
-              {data?.data.listUser.filter((user) => user.userRoles != null && user.userRoles.includes("Student") ).length}
+              {
+                data?.data.listUser.filter(
+                  (user) =>
+                    user.userRoles != null && user.userRoles.includes("Student")
+                ).length
+              }
             </h3>
           }
         />

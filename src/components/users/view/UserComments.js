@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import instance from "../../../services/middleware";
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Select from "react-select";
@@ -34,6 +33,14 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import UserCommentsCustomHeader from "./CustomHeader";
+import {
+  acceptComment,
+  deleteCourseComment,
+  getAllComments,
+  rejectComment,
+  replyToCourseComment,
+} from "../../../services/api/Comments";
+import { getAllTeachers } from "../../../services/api/Teachers";
 
 const schema = yup
   .object({
@@ -80,32 +87,10 @@ function UserComments() {
     },
   });
 
-  const getUserComments = () =>
-    instance.get(
-      `/Course/CommentManagment?PageNumber=${currentPage}&RowsOfPage=5&SortingCol=DESC&SortType=InsertDate${
-        searchTerm ? `&Query=${searchTerm}` : ""
-      }${
-        currentStatus.value != undefined ? `&Accept=${currentStatus.value}` : ""
-      }${teacher.value ? `&TeacherId=${teacher.value}` : ""}&userId=${userId}`
-    );
-
-  const getAllTeachers = () => instance.get("/Home/GetTeachers");
-
-  const acceptComment = (id) =>
-    instance.post(`/Course/AcceptCourseComment?CommentCourseId=${id}`);
-
-  const rejectComment = (id) =>
-    instance.post(`/Course/RejectCourseComment?CommentCourseId=${id}`);
-
-  const deleteCourseComment = (id) =>
-    instance.delete(`/Course/DeleteCourseComment?CourseCommandId=${id}`);
-
-  const replyToCourseComment = (formData) =>
-    instance.post("/Course/AddReplyCourseComment", formData);
-
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["userComments"],
-    queryFn: () => getUserComments(),
+    queryFn: () =>
+      getAllComments(currentPage, searchTerm, currentStatus, teacher, userId),
   });
 
   const { data: teachers } = useQuery({
@@ -152,10 +137,6 @@ function UserComments() {
   useEffect(() => {
     refetch();
   }, [currentStatus, teacher, currentPage]);
-
-  console.log(data?.data);
-
-  console.log(teachers?.data);
 
   const columns = [
     {
@@ -297,6 +278,10 @@ function UserComments() {
       </div>
     );
   };
+
+  if (error) {
+    return <span>خطا در دریافت اطلاعات</span>;
+  }
 
   return (
     <>

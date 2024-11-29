@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import instance from "../../../../services/middleware";
 import { useQuery } from "@tanstack/react-query";
 import { useForm, Controller } from "react-hook-form";
 import { Label, Row, Col, Input, Form, Button } from "reactstrap";
@@ -8,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { ArrowLeft, ArrowRight } from "react-feather";
 import moment from "moment";
+import { getUserById } from "../../../../services/api/Users";
 
 const schema = yup.object({
   fName: yup.string().required("نام الزامیست").min(2, "حداقل 2 حرف"),
@@ -58,8 +58,6 @@ function EditUserInfos({ stepper, setUserData }) {
     resolver: yupResolver(schema),
   });
 
-  const getUserById = (userId) => instance.get(`/User/UserDetails/${userId}`);
-
   const { data, isLoading, error } = useQuery({
     queryKey: ["userDetails"],
     queryFn: () => getUserById(userId),
@@ -79,8 +77,6 @@ function EditUserInfos({ stepper, setUserData }) {
         setValue("homeAdderess", data.data.homeAdderess);
     }
   }, [data]);
-
-  console.log(data?.data);
 
   if (isLoading) {
     return <p>loading data ...</p>;

@@ -1,12 +1,10 @@
 import { useParams } from "react-router-dom";
 import { Card, CardBody, CardTitle } from "reactstrap";
 import { useQuery } from "@tanstack/react-query";
-import instance from "../../../services/middleware";
+import { getUserById } from "../../../services/api/Users";
 
 function UserOtherInfos() {
   const { userId } = useParams();
-
-  const getUserById = (userId) => instance.get(`/User/UserDetails/${userId}`);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["userDetails"],
@@ -15,6 +13,10 @@ function UserOtherInfos() {
 
   if (isLoading) {
     return <p>loading data ...</p>;
+  }
+
+  if (error) {
+    return <span>خطا در دریافت اطلاعات</span>
   }
 
   return (

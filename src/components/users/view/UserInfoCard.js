@@ -1,13 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { Book, BookOpen } from "react-feather";
 import { Badge, Button, Card, CardBody } from "reactstrap";
-import instance from "../../../services/middleware";
 import { useParams } from "react-router-dom";
+import { getUserById } from "../../../services/api/Users";
 
 function UserInfoCard({ toggleTab }) {
   const { userId } = useParams();
-
-  const getUserById = (userId) => instance.get(`/User/UserDetails/${userId}`);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["userDetails"],
@@ -16,6 +14,10 @@ function UserInfoCard({ toggleTab }) {
 
   if (isLoading) {
     return <p>loading data ...</p>;
+  }
+
+  if (error) {
+    return <span>خطا در دریافت اطلاعات</span>
   }
 
   return (
@@ -138,21 +140,6 @@ function UserInfoCard({ toggleTab }) {
                   )}
                 </span>
               </li>
-
-              {/* <li className="mb-75">
-                <span className="fw-bolder me-25">شروع دوره :</span>
-                <span>{data.data.startTime.slice(0, 10)}</span>
-              </li>
-              <li className="mb-75">
-                <span className="fw-bolder me-25">پایان دوره :</span>
-                <span>{data.data.endTime.slice(0, 10)}</span>
-              </li>
-              <li className="mb-75">
-                <span className="fw-bolder me-25">توضیحات دوره :</span>
-                <div
-                  dangerouslySetInnerHTML={{ __html: data.data.describe }}
-                ></div>
-              </li> */}
             </ul>
           ) : null}
         </div>
