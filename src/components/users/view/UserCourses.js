@@ -1,15 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import instance from "../../../services/middleware";
 import { Card } from "reactstrap";
 import Avatar from "@components/avatar";
 import DataTable from "react-data-table-component";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import { getUserById } from "../../../services/api/Users";
 
 function UserCourses() {
   const { userId } = useParams();
-
-  const getUserById = (userId) => instance.get(`/User/UserDetails/${userId}`);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["userDetails"],
@@ -72,7 +70,9 @@ function UserCourses() {
     },
   ];
 
-//   console.log(data?.data);
+  if (error) {
+    return <span>خطا در دریافت اطلاعات</span>
+  }
 
   return (
     <Card>

@@ -4,14 +4,17 @@ export const getAllComments = (
   currentPage,
   searchTerm,
   currentStatus,
-  teacher
+  teacher,
+  userId
 ) =>
   instance.get(
     `/Course/CommentManagment?PageNumber=${currentPage}&RowsOfPage=10&SortingCol=DESC&SortType=InsertDate${
       searchTerm ? `&Query=${searchTerm}` : ""
     }${
       currentStatus.value != undefined ? `&Accept=${currentStatus.value}` : ""
-    }${teacher.value ? `&TeacherId=${teacher.value}` : ""}`
+    }${teacher.value ? `&TeacherId=${teacher.value}` : ""}${
+      userId ? `&userId=${userId}` : ""
+    }`
   );
 
 export const getCourseCommnetReplies = (courseId, commentId) =>

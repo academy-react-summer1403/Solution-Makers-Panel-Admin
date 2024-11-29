@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import instance from "../../../../services/middleware";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Label, Row, Col, Input, Form, Button } from "reactstrap";
 import { useForm, Controller } from "react-hook-form";
@@ -8,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { ArrowLeft } from "react-feather";
 import toast from "react-hot-toast";
+import { getUserById, updateUser } from "../../../../services/api/Users";
 
 const schema = yup.object({
   gmail: yup
@@ -62,10 +62,6 @@ function EditUserConnections({ stepper, userData }) {
     },
     resolver: yupResolver(schema),
   });
-
-  const getUserById = (userId) => instance.get(`/User/UserDetails/${userId}`);
-
-  const updateUser = (obj) => instance.put("/User/UpdateUser", obj);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["userDetails"],

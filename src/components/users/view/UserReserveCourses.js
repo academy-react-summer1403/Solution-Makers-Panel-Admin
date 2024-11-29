@@ -1,15 +1,13 @@
 import { Link, useParams } from "react-router-dom";
-import instance from "../../../services/middleware";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "reactstrap";
 import DataTable from "react-data-table-component";
 import { Eye } from "react-feather";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import { getUserById } from "../../../services/api/Users";
 
 function UserReserveCourses() {
   const { userId } = useParams();
-
-  const getUserById = (userId) => instance.get(`/User/UserDetails/${userId}`);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["userDetails"],
@@ -63,7 +61,10 @@ function UserReserveCourses() {
       name: "مشاهده جزئیات دوره",
       center: true,
       cell: (row) => (
-        <Link style={{ all: "unset", cursor: "pointer" }} to={`/courses/view/${row.courseId}`}>
+        <Link
+          style={{ all: "unset", cursor: "pointer" }}
+          to={`/courses/view/${row.courseId}`}
+        >
           <Eye size={20} />
         </Link>
       ),
@@ -71,7 +72,11 @@ function UserReserveCourses() {
   ];
 
   if (isLoading) {
-    return <p>loading data ...</p>
+    return <p>loading data ...</p>;
+  }
+
+  if (error) {
+    return <span>خطا در دریافت اطلاعات</span>
   }
 
   return (

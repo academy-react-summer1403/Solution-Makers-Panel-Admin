@@ -13,9 +13,9 @@ import {
 import { Check, X } from "react-feather";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import instance from "../../../services/middleware";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { createUser } from "../../../services/api/Users";
 
 const schema = yup
   .object({
@@ -64,8 +64,6 @@ function UsersCustomHeader({
     },
     resolver: yupResolver(schema),
   });
-
-  const createUser = (obj) => instance.post("/User/CreateUser", obj);
 
   const { mutateAsync: createUserMutate } = useMutation({
     mutationFn: createUser,
