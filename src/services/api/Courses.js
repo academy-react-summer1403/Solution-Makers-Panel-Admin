@@ -60,3 +60,18 @@ export const editCourse = (formData) => instance.put("/Course", formData);
 export const getCreateCourse = () => instance.get("/Course/GetCreate");
 
 export const getAllCoursesReserveList = () => instance.get("/CourseReserve");
+
+export const getCourseUserList = (courseId, currentPage, searchTerm) =>
+  instance.get(
+    `/CourseUser/GetCourseUserList?CourseId=${courseId}&PageNumber=${currentPage}&RowsOfPage=10${
+      searchTerm ? `&Query=${searchTerm}` : ""
+    }`
+  );
+
+export const getCourseUserListTotalCount = (courseId) =>
+  instance.get(
+    `/CourseUser/GetCourseUserList?CourseId=${courseId}&PageNumber=1&RowsOfPage=10000`
+  );
+
+export const getCourseGroupById = (groupId) =>
+  instance.get(`/CourseGroup/Details?Id=${groupId}`);

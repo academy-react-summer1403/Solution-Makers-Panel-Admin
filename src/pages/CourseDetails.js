@@ -17,7 +17,7 @@ const CourseDetails = () => {
     <div className="app-user-view">
       <Row>
         <Col xl="4" lg="5" xs={{ order: 1 }} md={{ order: 0, size: 5 }}>
-          <CourseInfoCard />
+          <CourseInfoCard toggleTab={toggleTab} />
         </Col>
         <Col xl="8" lg="7" xs={{ order: 0 }} md={{ order: 1, size: 7 }}>
           <CourseDetailsTabs active={active} toggleTab={toggleTab} />
