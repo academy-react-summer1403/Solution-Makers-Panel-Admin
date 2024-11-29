@@ -10,7 +10,7 @@ import {
 } from "../../../services/api/Courses";
 import toast from "react-hot-toast";
 
-const CourseInfoCard = () => {
+const CourseInfoCard = ({ toggleTab }) => {
   const { courseId } = useParams();
 
   const { data, isLoading, error, refetch } = useQuery({
@@ -55,11 +55,11 @@ const CourseInfoCard = () => {
   });
 
   if (isLoading) {
-    return <span>loading data ....</span>
+    return <span>loading data ....</span>;
   }
 
   if (error) {
-    return <span>خطا در دریافت اطلاعات</span>
+    return <span>خطا در دریافت اطلاعات</span>;
   }
 
   return (
@@ -170,7 +170,9 @@ const CourseInfoCard = () => {
           ) : null}
         </div>
         <div className="d-flex justify-content-center pt-2">
-          <Button color="primary">ویرایش</Button>
+          <Button color="primary" onClick={() => toggleTab("6")}>
+            ویرایش
+          </Button>
           {data.data.isActive ? (
             <Button
               className="ms-1"

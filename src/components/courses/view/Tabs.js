@@ -5,6 +5,7 @@ import EditCourse from "./EditCourse";
 import CourseGroups from "./CourseGroups";
 import CourseComments from "./CourseComments";
 import CourseReserve from "./CourseReserve";
+import CourseUsers from "./CourseUsers";
 
 const CourseDetailsTabs = ({ active, toggleTab }) => {
   return (
@@ -24,18 +25,24 @@ const CourseDetailsTabs = ({ active, toggleTab }) => {
         </NavItem>
         <NavItem>
           <NavLink active={active === "3"} onClick={() => toggleTab("3")}>
+            <Users className="font-medium-3 me-50" />
+            <span className="fw-bold">اعضا دوره</span>
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink active={active === "4"} onClick={() => toggleTab("4")}>
             <Grid className="font-medium-3 me-50" />
             <span className="fw-bold">گروه ها</span>
           </NavLink>
         </NavItem>
         <NavItem>
-          <NavLink active={active === "4"} onClick={() => toggleTab("4")}>
+          <NavLink active={active === "5"} onClick={() => toggleTab("5")}>
             <MessageSquare className="font-medium-3 me-50" />
             <span className="fw-bold">کامنت ها</span>
           </NavLink>
         </NavItem>
         <NavItem>
-          <NavLink active={active === "5"} onClick={() => toggleTab("5")}>
+          <NavLink active={active === "6"} onClick={() => toggleTab("6")}>
             <Edit2 className="font-medium-3 me-50" />
             <span className="fw-bold">ویرایش </span>
           </NavLink>
@@ -49,12 +56,15 @@ const CourseDetailsTabs = ({ active, toggleTab }) => {
           <CourseReserve toggleTab={toggleTab} />
         </TabPane>
         <TabPane tabId="3">
-          <CourseGroups />
+          <CourseUsers />
         </TabPane>
         <TabPane tabId="4">
-          <CourseComments />
+          <CourseGroups />
         </TabPane>
         <TabPane tabId="5">
+          <CourseComments />
+        </TabPane>
+        <TabPane tabId="6">
           <EditCourse />
         </TabPane>
       </TabContent>

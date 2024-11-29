@@ -15,7 +15,13 @@ import { selectThemeColors, showApplyChangesSwal } from "../../utility/Utils";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
-import { deleteCourseReserve, getAllCoursesReserveList, getCourseByIdAdmin, getCourseGroups, submitCourseReserve } from "../../services/api/Courses";
+import {
+  deleteCourseReserve,
+  getAllCoursesReserveList,
+  getCourseByIdAdmin,
+  getCourseGroups,
+  submitCourseReserve,
+} from "../../services/api/Courses";
 
 function ReserveListTable() {
   const [basicModal, setBasicModal] = useState(false);
@@ -112,6 +118,10 @@ function ReserveListTable() {
     }
   }, [courseGroups]);
 
+  useEffect(() => {
+    setBasicModal(false);
+  }, []);
+
   const columns = [
     {
       name: "نام دوره",
@@ -200,11 +210,11 @@ function ReserveListTable() {
   ];
 
   if (isLoading) {
-    return <span>loading data ...</span>
+    return <span>loading data ...</span>;
   }
 
   if (error) {
-    return <span>خطا در دریافت اطلاعات</span>
+    return <span>خطا در دریافت اطلاعات</span>;
   }
 
   return (

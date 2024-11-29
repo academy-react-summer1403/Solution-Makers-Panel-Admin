@@ -80,16 +80,18 @@ const CourseReserve = ({ toggleTab }) => {
 
   const columns = [
     {
-      minWidth: "300px",
       name: "نام رزرو کننده",
+      center: true,
       selector: (row) => row.studentName,
     },
     {
       name: "نام دوره",
+      center: true,
       selector: (row) => row.courseName,
     },
     {
       name: "وضعیت",
+      center: true,
       selector: (row) => row.accept,
       cell: (row) => {
         if (row.accept) {
@@ -123,6 +125,7 @@ const CourseReserve = ({ toggleTab }) => {
     },
     {
       name: "عملیات",
+      center: true,
       cell: (row) => {
         if (!row.accept) {
           return (
