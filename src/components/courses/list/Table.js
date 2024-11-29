@@ -3,7 +3,7 @@ import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import Avatar from "@components/avatar";
 import { Link } from "react-router-dom";
-import { ChevronDown } from "react-feather";
+import { Check, ChevronDown, X } from "react-feather";
 import {
   Card,
   UncontrolledDropdown,
@@ -13,12 +13,16 @@ import {
 } from "reactstrap";
 import { Edit2, MoreHorizontal, FileText } from "react-feather";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import instance from "../../../services/middleware";
 import AllCoursesCustomHeader from "./CustomHeader";
 import toast from "react-hot-toast";
 import { showApplyChangesSwal } from "../../../utility/Utils";
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import {
+  activateOrDeactiveCourse,
+  deleteCourse,
+  getAllCoursesList,
+} from "../../../services/api/Courses";
 
 const CoursesListTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -33,19 +37,8 @@ const CoursesListTable = () => {
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["courses"],
-    queryFn: () =>
-      instance.get(
-        `/Course/CourseList?PageNumber=${currentPage}&RowsOfPage=10&SortingCol=DESC&SortType=Expire&${
-          searchTerm ? `Query=${searchTerm}` : ""
-        }`
-      ),
+    queryFn: () => getAllCoursesList(currentPage, searchTerm),
   });
-
-  const activateOrDeactiveCourse = (obj) =>
-    instance.put("/Course/ActiveAndDeactiveCourse", obj);
-
-  const isDeleteCourse = (obj) =>
-    instance.delete("/Course/DeleteCourse", { data: obj });
 
   const { mutateAsync, isPending, isSuccess, isError } = useMutation({
     mutationFn: activateOrDeactiveCourse,
@@ -58,7 +51,7 @@ const CoursesListTable = () => {
   });
 
   const { mutateAsync: deletionMutate } = useMutation({
-    mutationFn: isDeleteCourse,
+    mutationFn: deleteCourse,
     onSuccess: () => {
       queryClient.invalidateQueries(["courses", "nums"]);
     },
@@ -91,10 +84,7 @@ const CoursesListTable = () => {
       minWidth: "300px",
       selector: (row) => row.title,
       cell: (row) => (
-        <div
-          className="d-flex justify-content-left align-items-center"
-          onClick={() => console.log(row.courseId)}
-        >
+        <div className="d-flex justify-content-left align-items-center">
           {renderCourse(row)}
           <div className="d-flex">
             <span>{row.title}</span>
@@ -220,15 +210,60 @@ const CoursesListTable = () => {
                 <FileText size={14} className="me-50" />
                 <span className="align-middle">جزئیات دوره</span>
               </DropdownItem>
-              <DropdownItem
-                tag="a"
-                href="/"
-                className="w-100"
-                onClick={(e) => e.preventDefault()}
-              >
-                <Edit2 size={14} className="me-50" />
-                <span className="align-middle">ویرایش دوره</span>
-              </DropdownItem>
+              {row.isActive ? (
+                <DropdownItem
+                  tag="span"
+                  className="w-100"
+                  onClick={() => {
+                    showApplyChangesSwal(() =>
+                      mutateAsync({ active: false, id: row.courseId })
+                    );
+                  }}
+                >
+                  <Edit2 size={14} className="me-50" />
+                  <span className="align-middle">غیر فعال کردن</span>
+                </DropdownItem>
+              ) : (
+                <DropdownItem
+                  tag="span"
+                  className="w-100"
+                  onClick={() => {
+                    showApplyChangesSwal(() =>
+                      mutateAsync({ active: true, id: row.courseId })
+                    );
+                  }}
+                >
+                  <Edit2 size={14} className="me-50" />
+                  <span className="align-middle">فعال کردن</span>
+                </DropdownItem>
+              )}
+              {row.isdelete ? (
+                <DropdownItem
+                  tag="span"
+                  className="w-100"
+                  onClick={() =>
+                    showApplyChangesSwal(() =>
+                      deletionMutate({ active: false, id: row.courseId })
+                    )
+                  }
+                >
+                  <Check size={14} className="me-50" />
+                  <span className="align-middle">موجود کردن</span>
+                </DropdownItem>
+              ) : (
+                <DropdownItem
+                  tag="span"
+                  className="w-100"
+                  onClick={() =>
+                    showApplyChangesSwal(() =>
+                      deletionMutate({ active: true, id: row.courseId })
+                    )
+                  }
+                >
+                  <X size={14} className="me-50" />
+                  <span className="align-middle">حذف کردن</span>
+                </DropdownItem>
+              )}
             </DropdownMenu>
           </UncontrolledDropdown>
         </div>
@@ -272,6 +307,10 @@ const CoursesListTable = () => {
 
   if (isLoading) {
     return <span>loading data ...</span>;
+  }
+
+  if (error) {
+    return <span>خطا در دریافت اطلاعات</span>;
   }
 
   return (

@@ -2,17 +2,20 @@ import { BookOpen, CheckCircle, MinusCircle, Slash } from "react-feather";
 import { Col } from "reactstrap";
 import StatsHorizontal from "@components/widgets/stats/StatsHorizontal";
 import { useQuery } from "@tanstack/react-query";
-import instance from "../../../services/middleware";
+import { getCoursesStatistics } from "../../../services/api/Courses";
 
 function CoursesListTopCards() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["nums"],
-    queryFn: () =>
-      instance.get("/Course/CourseList?PageNumber=1&RowsOfPage=1000"),
+    queryFn: getCoursesStatistics,
   });
 
   if (isLoading) {
     return <span>loading data ...</span>
+  }
+
+  if (error) {
+    return <span>خطا در دریافت اطلاعات</span>
   }
 
   return (

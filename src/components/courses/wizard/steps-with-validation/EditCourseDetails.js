@@ -6,8 +6,8 @@ import { useParams } from "react-router-dom";
 import * as yup from "yup";
 import { Label, Row, Col, Input, Form, Button } from "reactstrap";
 import { useEffect } from "react";
-import instance from "../../../../services/middleware";
 import { parseDate } from "@internationalized/date";
+import { getCourseByIdUser } from "../../../../services/api/Courses";
 
 const schema = yup
   .object({
@@ -32,16 +32,13 @@ const schema = yup
   .required();
 
 const EditCourseDetails = ({ stepper, formData }) => {
-  const getCourseByIdUser = (courseId) =>
-    instance.get(`/Home/GetCourseDetails?CourseId=${courseId}`);
-
   const { courseId } = useParams();
 
   const queryClient = useQueryClient();
 
   const courseDetails = queryClient.getQueryData(["courseDetails", courseId]);
 
-  const { data } = useQuery({
+  const { data, error } = useQuery({
     queryKey: ["courseDetailsUser", courseId],
     queryFn: () => getCourseByIdUser(courseId),
   });
@@ -49,8 +46,6 @@ const EditCourseDetails = ({ stepper, formData }) => {
   const {
     control,
     handleSubmit,
-    reset,
-    getValues,
     setValue,
     formState: { errors, isValid },
   } = useForm({
@@ -86,6 +81,10 @@ const EditCourseDetails = ({ stepper, formData }) => {
       setValue("UniqueString", data.data.uniqeUrlString);
     }
   }, [data]);
+
+  if (error) {
+    return <span>خطا در دریافت اطلاعات</span>;
+  }
 
   return (
     <>
@@ -265,7 +264,7 @@ const EditCourseDetails = ({ stepper, formData }) => {
               className="align-middle me-sm-25 me-0"
             ></ArrowLeft>
             <span className="align-middle d-sm-inline-block d-none">
-              Previous
+              بازگشت
             </span>
           </Button>
           <Button
@@ -278,7 +277,7 @@ const EditCourseDetails = ({ stepper, formData }) => {
               }
             }}
           >
-            <span className="align-middle d-sm-inline-block d-none">Next</span>
+            <span className="align-middle d-sm-inline-block d-none">بعدی</span>
             <ArrowRight
               size={14}
               className="align-middle ms-sm-25 ms-0"

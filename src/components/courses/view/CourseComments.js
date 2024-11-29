@@ -20,9 +20,17 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import instance from "../../../services/middleware";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
+import { getCourseCommnets } from "../../../services/api/Courses";
+import {
+  acceptComment,
+  deleteCourseComment,
+  editCourseComment,
+  getCourseCommnetReplies,
+  rejectComment,
+  replyToCourseComment,
+} from "../../../services/api/Comments";
 
 const schema = yup
   .object({
@@ -63,27 +71,6 @@ const CourseComments = () => {
       commentId: "",
     },
   });
-
-  const getCourseCommnets = (id) =>
-    instance.get(`/Course/GetCourseCommnets/${id}`);
-
-  const getCourseCommnetReplies = (courseId, commentId) =>
-    instance.get(`/Course/GetCourseReplyCommnets/${courseId}/${commentId}`);
-
-  const acceptComment = (id) =>
-    instance.post(`/Course/AcceptCourseComment?CommentCourseId=${id}`);
-
-  const rejectComment = (id) =>
-    instance.post(`/Course/RejectCourseComment?CommentCourseId=${id}`);
-
-  const replyToCourseComment = (formData) =>
-    instance.post("/Course/AddReplyCourseComment", formData);
-
-  const editCourseComment = (formData) =>
-    instance.put("/Course/UpdateCourseComment", formData);
-
-  const deleteCourseComment = (id) =>
-    instance.delete(`/Course/DeleteCourseComment?CourseCommandId=${id}`);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["courseComments"],
@@ -308,6 +295,10 @@ const CourseComments = () => {
 
   if (isLoading) {
     return <span>loading data ...</span>;
+  }
+
+  if (error) {
+    return <span>خطا در دریافت اطلاعات</span>
   }
 
   return (

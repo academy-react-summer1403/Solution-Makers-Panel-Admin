@@ -1,11 +1,10 @@
 import { ArrowLeft, ArrowRight, UploadCloud } from "react-feather";
 import { Row, Col, Button, Form, Input, Label } from "reactstrap";
-import instance from "../../../services/middleware";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { addCourse } from "../../../services/api/Courses";
 
 const CourseImage = ({ stepper, formData, setCourseId }) => {
-  const addCourse = (formData) => instance.post("/Course", formData);
 
   const { mutateAsync } = useMutation({
     mutationFn: addCourse,

@@ -29,5 +29,8 @@ export const rejectComment = (id) =>
 export const deleteCourseComment = (id) =>
   instance.delete(`/Course/DeleteCourseComment?CourseCommandId=${id}`);
 
+export const editCourseComment = (formData) =>
+  instance.put("/Course/UpdateCourseComment", formData);
+
 export const replyToCourseComment = (formData) =>
   instance.post("/Course/AddReplyCourseComment", formData);

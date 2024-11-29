@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import instance from "../../services/middleware";
 import DataTable from "react-data-table-component";
 import {
   Button,
@@ -16,6 +15,7 @@ import { selectThemeColors, showApplyChangesSwal } from "../../utility/Utils";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
+import { deleteCourseReserve, getAllCoursesReserveList, getCourseByIdAdmin, getCourseGroups, submitCourseReserve } from "../../services/api/Courses";
 
 function ReserveListTable() {
   const [basicModal, setBasicModal] = useState(false);
@@ -30,21 +30,6 @@ function ReserveListTable() {
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
-  const getCourseByIdAdmin = (courseId) => instance.get(`/Course/${courseId}`);
-
-  const getCourseGroups = (TeacherId, CourseId) =>
-    instance.get(
-      `/CourseGroup/GetCourseGroup?TeacherId=${TeacherId}&CourseId=${CourseId}`
-    );
-
-  const getAllCoursesReserveList = () => instance.get("/CourseReserve");
-
-  const submitCourseReserve = (obj) =>
-    instance.post("/CourseReserve/SendReserveToCourse", obj);
-
-  const deleteCourseReserve = (id) =>
-    instance.delete("/CourseReserve", { data: { id } });
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["allCoursesReserveList"],
@@ -215,7 +200,11 @@ function ReserveListTable() {
   ];
 
   if (isLoading) {
-    return <span>loading data ...</span>;
+    return <span>loading data ...</span>
+  }
+
+  if (error) {
+    return <span>خطا در دریافت اطلاعات</span>
   }
 
   return (

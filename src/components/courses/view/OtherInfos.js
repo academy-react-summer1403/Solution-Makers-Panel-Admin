@@ -1,19 +1,23 @@
 import { Col, Row } from "reactstrap";
 import StatsVertical from "@components/widgets/stats/StatsVertical";
 import { Users, ThumbsUp, ShoppingBag } from "react-feather";
-import instance from "../../../services/middleware";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { getCourseByIdAdmin } from "../../../services/api/Courses";
 
 function OtherInfos() {
   const { courseId } = useParams();
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["courseDetails", courseId],
-    queryFn: () => instance.get(`/Course/${courseId}`),
+    queryFn: getCourseByIdAdmin
   });
 
   if (isLoading) {
     return <span>loading data ...</span>;
+  }
+
+  if (error) {
+    return <span>خطا در دریافت اطلاعات</span>
   }
 
   return (
