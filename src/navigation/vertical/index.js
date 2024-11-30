@@ -76,6 +76,12 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/articles",
       },
+      {
+        id: "AddNewArticle",
+        title: "افزودن اخبار و مقالات جدید",
+        icon: <Circle size={12} />,
+        navLink: "/add-news",
+      },
     ],
   },
 ];
