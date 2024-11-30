@@ -16,3 +16,9 @@ export const getAdminNewsList = (
 
 export const activeOrDeactiveNews = (formData) =>
   instance.put("/News/ActiveDeactiveNews", formData);
+
+export const getNewsCategoriesList = () =>
+  instance.get("/News/GetListNewsCategory");
+
+export const createNewArticle = (formData) =>
+  instance.post("/News/CreateNews", formData);
