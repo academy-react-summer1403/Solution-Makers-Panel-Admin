@@ -3,7 +3,7 @@ import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import Avatar from "@components/avatar";
 import { Link } from "react-router-dom";
-import { Check, ChevronDown, X } from "react-feather";
+import { Check, X } from "react-feather";
 import {
   Card,
   UncontrolledDropdown,
@@ -319,12 +319,10 @@ const CoursesListTable = () => {
         <DataTable
           noHeader
           subHeader
-          sortServer
           pagination
           responsive
           paginationServer
           columns={columns}
-          sortIcon={<ChevronDown />}
           className="react-dataTable"
           paginationComponent={CustomPagination}
           data={data.data.courseDtos}

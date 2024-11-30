@@ -32,13 +32,14 @@ const Register = lazy(() => import("../../pages/Register"));
 const ForgotPassword = lazy(() => import("../../pages/ForgotPassword"));
 const Error = lazy(() => import("../../pages/Error"));
 const Sample = lazy(() => import("../../pages/Sample"));
-const CoursesList = lazy(() => import("../../pages/CoursesList"));
+const Courses = lazy(() => import("../../pages/Courses"));
 const CourseDetails = lazy(() => import("../../pages/CourseDetails"));
 const AddNewCourse = lazy(() => import("../../pages/AddNewCourse"));
 const CoursesReserveList = lazy(() => import("../../pages/CoursesReserveList"));
-const UsersList = lazy(() => import("../../pages/UsersList"));
+const Users = lazy(() => import("../../pages/Users"));
 const UserDetails = lazy(() => import("../../pages/UserDetails"));
 const Comments = lazy(() => import("../../pages/Comments"));
+const Articles = lazy(() => import("../../pages/Articles"));
 
 // ** Merge Routes
 const Routes = [
@@ -61,7 +62,7 @@ const Routes = [
   },
   {
     path: "/courses",
-    element: <CoursesList />,
+    element: <Courses />,
   },
   {
     path: "/courses/view/:courseId",
@@ -77,7 +78,7 @@ const Routes = [
   },
   {
     path: "/users",
-    element: <UsersList />,
+    element: <Users />,
   },
   {
     path: "/users/view/:userId",
@@ -86,6 +87,10 @@ const Routes = [
   {
     path: "/comments",
     element: <Comments />,
+  },
+  {
+    path: "/articles",
+    element: <Articles />,
   },
   {
     path: "/login",

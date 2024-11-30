@@ -20,7 +20,7 @@ import { FileText, Trash, MoreHorizontal } from "react-feather";
 import UsersCustomHeader from "./CustomHeader";
 import { selectThemeColors } from "../../../utility/Utils";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   deleteUser,
   getUsersList,
@@ -29,7 +29,6 @@ import {
 
 function UsersListTable() {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [currentRole, setCurrentRole] = useState({
@@ -134,13 +133,12 @@ function UsersListTable() {
             </DropdownToggle>
             <DropdownMenu container="body">
               <DropdownItem
+                tag={Link}
+                to={`/users/view/${row.id}`}
                 className="w-100"
-                onClick={() => navigate(`/users/view/${row.id}`)}
               >
                 <FileText size={14} className="me-50" />
-                <span to={`/users/view/${row.id}`} className="align-middle">
-                  جزئیات
-                </span>
+                <span className="align-middle">جزئیات</span>
               </DropdownItem>
               <DropdownItem
                 className="w-100"
