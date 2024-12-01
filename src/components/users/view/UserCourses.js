@@ -53,14 +53,13 @@ function UserCourses() {
       maxWidth: "300px",
       cell: (row) => (
         <p
+          dangerouslySetInnerHTML={{ __html: row.describe }}
           style={{
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
             overflow: "hidden",
           }}
-        >
-          {row.describe}
-        </p>
+        ></p>
       ),
     },
     {
@@ -71,7 +70,7 @@ function UserCourses() {
   ];
 
   if (error) {
-    return <span>خطا در دریافت اطلاعات</span>
+    return <span>خطا در دریافت اطلاعات</span>;
   }
 
   return (
