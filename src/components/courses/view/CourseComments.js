@@ -37,8 +37,8 @@ const schema = yup
     title: yup
       .string()
       .required("عنوان پاسخ را وارد کنید")
-      .min(2, "حداقل 2 حرف")
-      .max(20, "حداکثر 20 حرف"),
+      .min(5, "حداقل 5 حرف")
+      .max(40, "حداکثر 40 حرف"),
     body: yup
       .string()
       .required("متن پاسخ را وارد کنید")
@@ -298,7 +298,7 @@ const CourseComments = () => {
   }
 
   if (error) {
-    return <span>خطا در دریافت اطلاعات</span>
+    return <span>خطا در دریافت اطلاعات</span>;
   }
 
   return (

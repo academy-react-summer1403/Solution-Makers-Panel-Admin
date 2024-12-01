@@ -90,7 +90,7 @@ export const showApplyChangesSwal = (method) =>
     title: "آیا از اعمال تغییرات مطمئن هستید؟",
     icon: "question",
     showCancelButton: true,
-    confirmButtonColor: "#3085d6",
+    confirmButtonColor: "#7367F0",
     cancelButtonColor: "#d33",
     confirmButtonText: "بله",
     cancelButtonText: "خیر",

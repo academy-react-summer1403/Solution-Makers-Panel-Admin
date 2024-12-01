@@ -1,5 +1,7 @@
 import instance from "../middleware";
 
+export const getArticleById = (id) => instance.get(`/News/${id}`);
+
 export const getAdminNewsList = (
   currentPage,
   sortingCol,
@@ -13,6 +15,15 @@ export const getAdminNewsList = (
       IsActive ? `&IsActive=${IsActive}` : ""
     }`
   );
+
+export const getAdminArticleComments = (articleId) =>
+  instance.get(`/News/GetAdminNewsComments?NewsId=${articleId}`);
+
+export const getAdminArticleCommentReplies = (commentId) =>
+  instance.get(`/News/GetAdminRepliesComments?CommentId=${commentId}`);
+
+export const addarticleCommentReply = (obj) =>
+  instance.post("/News/CreateNewsReplyComment", obj);
 
 export const activeOrDeactiveNews = (formData) =>
   instance.put("/News/ActiveDeactiveNews", formData);

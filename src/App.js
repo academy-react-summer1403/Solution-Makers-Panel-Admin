@@ -7,25 +7,25 @@ import toast from "react-hot-toast";
 import { setItem } from "./services/common/storage";
 
 const App = () => {
-  useEffect(() => {
-    axios
-      .post("https://classapi.sepehracademy.ir/api/Sign/Login", {
-        phoneOrGmail: "sobhanarab30@gmail.com",
-        password: "12345678",
-        rememberMe: true,
-      })
-      .then((res) => {
-        if (res.data.token) {
-          setItem("token", res.data.token);
-          setItem("userId", res.data.id);
-          toast.success("با موفقیت وارد شدید");
-        } else {
-          toast.error("همچین کاربری وجود ندارد");
-          return;
-        }
-      })
-      .catch((error) => toast.error("خطایی رخ داد"));
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .post("https://classapi.sepehracademy.ir/api/Sign/Login", {
+  //       phoneOrGmail: "sobhanarab30@gmail.com",
+  //       password: "12345678",
+  //       rememberMe: true,
+  //     })
+  //     .then((res) => {
+  //       if (res.data.token) {
+  //         setItem("token", res.data.token);
+  //         setItem("userId", res.data.id);
+  //         toast.success("با موفقیت وارد شدید");
+  //       } else {
+  //         toast.error("همچین کاربری وجود ندارد");
+  //         return;
+  //       }
+  //     })
+  //     .catch((error) => toast.error("خطایی رخ داد"));
+  // }, []);
 
   return (
     <Suspense fallback={null}>
