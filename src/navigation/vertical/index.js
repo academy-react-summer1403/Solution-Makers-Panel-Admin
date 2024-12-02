@@ -69,6 +69,12 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/status",
       },
+      {
+        id: "CourseLevel",
+        title: "لیست سطح های دوره",
+        icon: <Circle size={12} />,
+        navLink: "/courseLevel",
+      },
     ],
   },
   {
