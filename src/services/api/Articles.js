@@ -31,11 +31,23 @@ export const addarticleCommentReply = (obj) =>
 export const activeOrDeactiveNews = (formData) =>
   instance.put("/News/ActiveDeactiveNews", formData);
 
-export const getNewsCategoriesList = () =>
-  instance.get("/News/GetListNewsCategory");
-
 export const createNewArticle = (formData) =>
   instance.post("/News/CreateNews", formData);
 
 export const editArticle = (formData) =>
   instance.put("/News/UpdateNews", formData);
+
+export const getCategoryWithId = (id) =>
+  instance.get(`/News/GetNewsCategory/${id}`);
+
+export const getNewsCategoriesList = () =>
+  instance.get("/News/GetListNewsCategory");
+
+export const getNewsWithCategoryId = (categoryId) =>
+  instance.get(`/News/GetNewsWithCategory/${categoryId}`);
+
+export const createNewCategory = (formData) =>
+  instance.post("/News/CreateNewsCategory", formData);
+
+export const editCategory = (formData) =>
+  instance.put("/News/UpdateNewsCategory", formData);

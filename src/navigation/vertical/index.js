@@ -60,12 +60,6 @@ export default [
     ],
   },
   {
-    id: "CommentsPage",
-    title: "مدیریت کامنت ها",
-    icon: <MessageCircle size={20} />,
-    navLink: "/comments",
-  },
-  {
     id: "ArticlesPage",
     title: "مدیریت اخبار و مقالات",
     icon: <File size={20} />,
@@ -77,11 +71,23 @@ export default [
         navLink: "/articles",
       },
       {
+        id: "ArticleCategoryList",
+        title: "لیست دسته بندی ها",
+        icon: <Circle size={12} />,
+        navLink: "/articleCategoryList",
+      },
+      {
         id: "AddNewArticle",
         title: "افزودن اخبار و مقالات جدید",
         icon: <Circle size={12} />,
         navLink: "/add-news",
       },
     ],
+  },
+  {
+    id: "CommentsPage",
+    title: "مدیریت کامنت ها",
+    icon: <MessageCircle size={20} />,
+    navLink: "/comments",
   },
 ];

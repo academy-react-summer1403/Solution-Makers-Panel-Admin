@@ -39,7 +39,7 @@ function ArticleDetails({ stepper, formData }) {
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm({
     defaultValues: {
       Title: "",
