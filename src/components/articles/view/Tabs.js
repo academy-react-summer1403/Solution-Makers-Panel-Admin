@@ -2,6 +2,7 @@ import { Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
 import { Info, MessageSquare, Edit2 } from "react-feather";
 import ArticleDescribe from "./Describe";
 import ArticleComments from "./ArticleComments";
+import EditArticle from "./EditArticle";
 
 const ArticleDetailsTabs = ({ active, toggleTab }) => {
   return (
@@ -19,13 +20,13 @@ const ArticleDetailsTabs = ({ active, toggleTab }) => {
             <span className="fw-bold">کامنت ها</span>
           </NavLink>
         </NavItem>
-        {/* <NavItem>
+        <NavItem>
           <NavLink active={active === "3"} onClick={() => toggleTab("3")}>
-            <Users className="font-medium-3 me-50" />
-            <span className="fw-bold">اعضا دوره</span>
+            <Edit2 className="font-medium-3 me-50" />
+            <span className="fw-bold">ویرایش</span>
           </NavLink>
         </NavItem>
-        <NavItem>
+        {/* <NavItem>
           <NavLink active={active === "4"} onClick={() => toggleTab("4")}>
             <Grid className="font-medium-3 me-50" />
             <span className="fw-bold">گروه ها</span>
@@ -51,9 +52,9 @@ const ArticleDetailsTabs = ({ active, toggleTab }) => {
         <TabPane tabId="2">
           <ArticleComments />
         </TabPane>
-        {/* <TabPane tabId="3">
-          <CourseUsers />
-        </TabPane> */}
+        <TabPane tabId="3">
+          <EditArticle />
+        </TabPane>
         {/* <TabPane tabId="4">
           <CourseGroups />
         </TabPane> */}

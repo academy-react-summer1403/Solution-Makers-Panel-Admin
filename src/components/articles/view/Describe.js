@@ -21,7 +21,7 @@ function ArticleDescribe() {
   }
 
   return (
-    <Card>
+    <Card className="bg-white">
       <CardBody>
         <div
           style={{ textAlign: "justify" }}
