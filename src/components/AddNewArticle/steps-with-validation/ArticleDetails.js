@@ -19,13 +19,13 @@ const schema = yup.object().shape({
   GoogleDescribe: yup
     .string()
     .required("توضیحات گوگل را وارد کنید")
-    .min(7, "حداقل 70 حرف")
+    .min(70, "حداقل 70 حرف")
     .max(150, "حداکثر 150 حرف"),
   MiniDescribe: yup
     .string()
     .required("توضیحات کوتاه را وارد کنید")
     .min(10, "حداقل 10 حرف")
-    .max(30, "حداکثر 30 حرف"),
+    .max(300, "حداکثر 300 حرف"),
   Keyword: yup.string().required("کلمات کلیدی را وارد کنید"),
   NewsCatregoryId: yup
     .object()

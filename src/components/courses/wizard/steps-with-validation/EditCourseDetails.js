@@ -6,7 +6,8 @@ import { useParams } from "react-router-dom";
 import * as yup from "yup";
 import { Label, Row, Col, Input, Form, Button } from "reactstrap";
 import { useEffect } from "react";
-import { parseDate } from "@internationalized/date";
+import moment from "moment/moment";
+import TextEditor from "../../../Editor";
 import { getCourseByIdUser } from "../../../../services/api/Courses";
 
 const schema = yup
@@ -23,8 +24,14 @@ const schema = yup
       .nullable()
       .required("ظرفیت دوره را وارد کنید"),
     SessionNumber: yup.string().required("تعداد جلسات دوره را وارد کنید"),
-    MiniDescribe: yup.string().required("توضیحات مختصر دوره را وارد کنید"),
-    Describe: yup.string().required("توضیحات کامل دوره را وارد کنید"),
+    MiniDescribe: yup
+      .string()
+      .required("توضیحات مختصر دوره را وارد کنید")
+      .min(15, "حداقل 15 حرف"),
+    Describe: yup
+      .string()
+      .required("توضیحات کامل دوره را وارد کنید")
+      .min(30, "حداقل 30 حرف"),
     StartTime: yup.string().required("تاریخ شروع دوره را وارد کنید"),
     EndTime: yup.string().required("تاریخ پایان دوره را وارد کنید"),
     UniqueString: yup.string().required("کلمه یکتا دوره را وارد کنید"),
@@ -41,13 +48,15 @@ const EditCourseDetails = ({ stepper, formData }) => {
   const { data, error } = useQuery({
     queryKey: ["courseDetailsUser", courseId],
     queryFn: () => getCourseByIdUser(courseId),
+    refetchOnWindowFocus: false,
   });
 
   const {
     control,
     handleSubmit,
     setValue,
-    formState: { errors, isValid },
+    getValues,
+    formState: { errors },
   } = useForm({
     mode: "onSubmit",
     resolver: yupResolver(schema),
@@ -103,17 +112,14 @@ const EditCourseDetails = ({ stepper, formData }) => {
           formData.append("MiniDescribe", data.MiniDescribe);
           formData.append(
             "StartTime",
-            `${parseDate(data.StartTime).year}-${
-              parseDate(data.StartTime).month
-            }-${parseDate(data.StartTime).day}`
+            moment(data.StartTime).format().slice(0, 10)
           );
           formData.append(
             "EndTime",
-            `${parseDate(data.EndTime).year}-${parseDate(data.EndTime).month}-${
-              parseDate(data.EndTime).day
-            }`
+            moment(data.EndTime).format().slice(0, 10)
           );
           formData.append("UniqeUrlString", data.UniqueString);
+          stepper.next();
         })}
       >
         <Row>
@@ -191,6 +197,7 @@ const EditCourseDetails = ({ stepper, formData }) => {
               {errors.StartTime?.message}
             </p>
           </Col>
+
           <Col md="6" className="mb-1">
             <Label className="form-label" for={`EndTime`}>
               تاریخ پایان
@@ -220,9 +227,7 @@ const EditCourseDetails = ({ stepper, formData }) => {
               {errors.UniqueString?.message}
             </p>
           </Col>
-        </Row>
 
-        <Row>
           <Col md="6" className="mb-1">
             <Label className="form-label" for={`MiniDescribe`}>
               توضیحات مختصر
@@ -239,16 +244,23 @@ const EditCourseDetails = ({ stepper, formData }) => {
               {errors.MiniDescribe?.message}
             </p>
           </Col>
-          <Col md="6" className="mb-1">
+        </Row>
+
+        <Row>
+          <Col className="mb-2">
             <Label className="form-label" for={`Describe`}>
-              توضیحات کامل
+              توضیحات اصلی
             </Label>
             <Controller
-              name={`Describe`}
-              id={`Describe`}
+              name="Describe"
               control={control}
               render={({ field }) => (
-                <Input type="textarea" style={{ height: "100px" }} {...field} />
+                <TextEditor
+                  value={getValues("Describe")}
+                  valueTitle="Describe"
+                  setValue={setValue}
+                  {...field}
+                />
               )}
             />
             <p style={{ color: "red", marginTop: 5 }}>
@@ -267,16 +279,7 @@ const EditCourseDetails = ({ stepper, formData }) => {
               بازگشت
             </span>
           </Button>
-          <Button
-            color="primary"
-            className="btn-next"
-            type="submit"
-            onClick={() => {
-              if (isValid) {
-                stepper.next();
-              }
-            }}
-          >
+          <Button color="primary" className="btn-next" type="submit">
             <span className="align-middle d-sm-inline-block d-none">بعدی</span>
             <ArrowRight
               size={14}

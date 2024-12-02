@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import {
   addarticleCommentReply,
+  editArticleComment,
   getAdminArticleCommentReplies,
   getAdminArticleComments,
 } from "../../../services/api/Articles";
@@ -14,6 +15,7 @@ import {
   DropdownToggle,
   Form,
   Input,
+  Label,
   Modal,
   ModalBody,
   ModalHeader,
@@ -22,7 +24,7 @@ import {
 } from "reactstrap";
 import DataTable from "react-data-table-component";
 import ErrorComponent from "../../common/ErrorComponent";
-import { FileText, MessageCircle, MoreHorizontal } from "react-feather";
+import { Edit2, FileText, MessageCircle, MoreHorizontal } from "react-feather";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Controller, useForm } from "react-hook-form";
@@ -45,8 +47,10 @@ const schema = yup
 
 function ArticleComments() {
   const { articleId } = useParams();
+  const queryClient = useQueryClient();
   const [centeredModal, setCenteredModal] = useState(false);
   const [repliesModal, setRepliesModal] = useState(false);
+  const [editCommentModal, setEditCommentModal] = useState(false);
   const [commentId, setCommentId] = useState("");
   const [commentData, setCommentData] = useState({});
   const [allReplies, setAllReplies] = useState([]);
@@ -55,6 +59,7 @@ function ArticleComments() {
     control,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -94,6 +99,19 @@ function ArticleComments() {
     onError: () => toast.error("خطایی رخ داد"),
   });
 
+  const { mutateAsync: editArticleCommentMutate } = useMutation({
+    mutationFn: editArticleComment,
+    onSuccess: () => {
+      queryClient.invalidateQueries("articleComments");
+      toast.success("تغییرات ثبت شد");
+      setEditCommentModal(!editCommentModal);
+      if (repliesModal) {
+        setRepliesModal(!repliesModal);
+      }
+    },
+    onError: () => toast.error("خطایی رخ داد"),
+  });
+
   useEffect(() => {
     if (replies?.data) {
       replies?.data.map((reply) => {
@@ -114,6 +132,12 @@ function ArticleComments() {
       setAllReplies([]);
     }
   }, [repliesModal]);
+
+  useEffect(() => {
+    if (!editCommentModal) {
+      reset();
+    }
+  }, [editCommentModal]);
 
   const columns = [
     {
@@ -167,6 +191,19 @@ function ArticleComments() {
               >
                 <MessageCircle size={14} className="me-50" />
                 <span className="align-middle">پاسخ دادن</span>
+              </DropdownItem>
+              <DropdownItem
+                tag="span"
+                className="w-100"
+                onClick={() => {
+                  setEditCommentModal(!editCommentModal);
+                  setCommentData(row);
+                  setValue("title", row.title);
+                  setValue("describe", row.describe);
+                }}
+              >
+                <Edit2 size={14} className="me-50" />
+                <span className="align-middle">ویرایش</span>
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
@@ -283,6 +320,100 @@ function ArticleComments() {
               )}
             </>
           )}
+        </ModalBody>
+      </Modal>
+
+      <Modal
+        isOpen={editCommentModal}
+        toggle={() => setEditCommentModal(!editCommentModal)}
+        className="modal-dialog-centered"
+      >
+        <ModalHeader toggle={() => setEditCommentModal(!editCommentModal)}>
+          ویرایش کامنت
+        </ModalHeader>
+        <ModalBody>
+          <Form
+            // onSubmit={handleSubmit((data, event) => {
+            //   event.preventDefault();
+            //   const obj = {
+            //     newsId: articleId,
+            //     userIpAddress: "testIpAddress",
+            //     title: data.title,
+            //     describe: data.describe,
+            //     userId: getItem("userId"),
+            //     parentId: commentData.id,
+            //   };
+            //   addarticleCommentReplyMutate(obj);
+            // })}
+            onSubmit={handleSubmit((data, event) => {
+              event.preventDefault();
+              const obj = {
+                id: commentData.id,
+                newsId: articleId,
+                title: data.title,
+                describe: data.describe,
+                accept: event.target.ex1.value == "true" ? true : false,
+              };
+              editArticleCommentMutate(obj);
+              console.log(obj);
+            })}
+          >
+            <div className="mb-2">
+              <Controller
+                name="title"
+                control={control}
+                render={({ field }) => (
+                  <Input {...field} placeholder="عنوان پاسخ" />
+                )}
+              />
+              <p style={{ color: "red", marginTop: 5 }}>
+                {errors.title?.message}
+              </p>
+            </div>
+            <div className="mb-2">
+              <Controller
+                name="describe"
+                control={control}
+                render={({ field }) => (
+                  <Input type="textarea" {...field} placeholder="متن پاسخ" />
+                )}
+              />
+              <p style={{ color: "red", marginTop: 5 }}>
+                {errors.describe?.message}
+              </p>
+            </div>
+
+            <div className="demo-inline-spacing">
+              <div className="form-check">
+                <Input
+                  type="radio"
+                  id="ex1-active"
+                  name="ex1"
+                  value={true}
+                  defaultChecked
+                />
+                <Label className="form-check-label" for="ex1-active">
+                  تایید کامنت
+                </Label>
+              </div>
+              <div className="form-check">
+                <Input
+                  type="radio"
+                  id="ex1-inactive"
+                  name="ex1"
+                  value={false}
+                />
+                <Label className="form-check-label" for="ex1-inactive">
+                  رد کامنت
+                </Label>
+              </div>
+            </div>
+            <div className="d-flex justify-content-end">
+              <Button type="submit" color="primary">
+                ثبت
+              </Button>
+            </div>
+          </Form>
         </ModalBody>
       </Modal>
     </>

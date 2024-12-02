@@ -175,19 +175,13 @@ const ArticleInfoCard = ({ toggleTab }) => {
                 <span className="fw-bolder me-25">آخرین بروز رسانی : </span>
                 <span>{data.data.detailsNewsDto.updateDate.slice(0, 10)}</span>
               </li>
-              {/* <li className="mb-75">
-                <span className="fw-bolder me-25">توضیحات دوره :</span>
-                <div
-                  dangerouslySetInnerHTML={{ __html: data.data.detailsNewsDto.describe }}
-                ></div>
-              </li> */}
             </ul>
           ) : null}
         </div>
         <div className="d-flex justify-content-center pt-2">
-          {/* <Button color="primary" onClick={() => toggleTab("6")}>
+          <Button color="primary" onClick={() => toggleTab("3")}>
             ویرایش
-          </Button> */}
+          </Button>
           {data.data.detailsNewsDto.active ? (
             <Button
               className="ms-1"

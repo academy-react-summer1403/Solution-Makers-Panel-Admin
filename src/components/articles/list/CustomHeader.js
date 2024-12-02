@@ -76,16 +76,15 @@ function ArticlesListCustomHeader({
               setCurrentPage(1);
             }}
           />
-
-          {/* <div className="d-flex align-items-center table-header-actions">
+          <div className="d-flex align-items-center table-header-actions">
             <Button
               className="add-new-user"
               color="primary"
-              onClick={() => navigate("/add-course")}
+              onClick={() => navigate("/add-news")}
             >
-              ساخت دوره جدید
+              ساخت مقاله جدید
             </Button>
-          </div> */}
+          </div>
         </Col>
       </Row>
     </div>

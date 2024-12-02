@@ -22,6 +22,9 @@ export const getAdminArticleComments = (articleId) =>
 export const getAdminArticleCommentReplies = (commentId) =>
   instance.get(`/News/GetAdminRepliesComments?CommentId=${commentId}`);
 
+export const editArticleComment = (obj) =>
+  instance.put("/News/UpdateNewsComment", obj);
+
 export const addarticleCommentReply = (obj) =>
   instance.post("/News/CreateNewsReplyComment", obj);
 
@@ -33,3 +36,6 @@ export const getNewsCategoriesList = () =>
 
 export const createNewArticle = (formData) =>
   instance.post("/News/CreateNews", formData);
+
+export const editArticle = (formData) =>
+  instance.put("/News/UpdateNews", formData);
