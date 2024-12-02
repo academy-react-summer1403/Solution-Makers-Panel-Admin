@@ -57,6 +57,12 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/add-course",
       },
+      {
+        id: "Techs",
+        title: "لیست تکنولوژی ها",
+        icon: <Circle size={12} />,
+        navLink: "/techs",
+      },
     ],
   },
   {

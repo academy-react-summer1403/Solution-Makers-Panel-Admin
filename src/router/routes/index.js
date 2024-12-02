@@ -45,6 +45,7 @@ const ArticleCategoryList = lazy(() =>
   import("../../pages/ArticleCategoryList")
 );
 const AddNewArticle = lazy(() => import("../../pages/AddNewArticle"));
+const Technologies = lazy(() => import("../../pages/Technologies"));
 
 // ** Merge Routes
 const Routes = [
@@ -80,6 +81,10 @@ const Routes = [
   {
     path: "/add-course",
     element: <AddNewCourse />,
+  },
+  {
+    path: "/techs",
+    element: <Technologies />,
   },
   {
     path: "/users",
