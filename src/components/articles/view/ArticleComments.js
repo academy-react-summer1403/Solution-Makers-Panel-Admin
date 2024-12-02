@@ -333,18 +333,6 @@ function ArticleComments() {
         </ModalHeader>
         <ModalBody>
           <Form
-            // onSubmit={handleSubmit((data, event) => {
-            //   event.preventDefault();
-            //   const obj = {
-            //     newsId: articleId,
-            //     userIpAddress: "testIpAddress",
-            //     title: data.title,
-            //     describe: data.describe,
-            //     userId: getItem("userId"),
-            //     parentId: commentData.id,
-            //   };
-            //   addarticleCommentReplyMutate(obj);
-            // })}
             onSubmit={handleSubmit((data, event) => {
               event.preventDefault();
               const obj = {
