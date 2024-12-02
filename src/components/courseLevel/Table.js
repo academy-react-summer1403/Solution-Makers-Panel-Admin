@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { getStatusList } from "../../services/api/Status";
 import {
   Card,
   DropdownItem,
@@ -12,37 +11,28 @@ import {
 import { Edit2, MoreHorizontal } from "react-feather";
 import ErrorComponent from "../common/ErrorComponent";
 import DataTable from "react-data-table-component";
-import StatusListCustomHeader from "./CustomHeader";
+import CourseLevelListHeader from "./CustomHeader";
+import { getAllCourseLevels } from "../../services/api/CourseLevel";
 
-function StatusListTable() {
+function CourseLevelListTable() {
   const [editId, setEditId] = useState("");
   const [createOrEditModal, setCreateOrEditModal] = useState(false);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["statusList"],
-    queryFn: getStatusList,
+    queryKey: ["courseLevelsList"],
+    queryFn: getAllCourseLevels,
   });
 
   const columns = [
     {
-      name: "نام وضعیت",
+      name: "نام سطح",
       center: true,
-      selector: (row) => row.statusName,
+      selector: (row) => row.levelName,
     },
     {
-      name: "توضیحات",
-      center: true,
-      selector: (row) => row.describe,
-    },
-    {
-      name: "شناسه وضعیت",
+      name: "شناسه",
       center: true,
       selector: (row) => row.id,
-    },
-    {
-      name: "َشماره وضعیت",
-      center: true,
-      selector: (row) => row.statusNumber,
     },
     {
       name: "عملیات",
@@ -91,7 +81,7 @@ function StatusListTable() {
           className="react-dataTable"
           data={data?.data}
           subHeaderComponent={
-            <StatusListCustomHeader
+            <CourseLevelListHeader
               editId={editId}
               setEditId={setEditId}
               createOrEditModal={createOrEditModal}
@@ -104,4 +94,4 @@ function StatusListTable() {
   );
 }
 
-export default StatusListTable;
+export default CourseLevelListTable;
