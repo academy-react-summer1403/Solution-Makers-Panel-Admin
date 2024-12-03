@@ -6,6 +6,7 @@ import {
   Users,
   MessageCircle,
   File,
+  Grid,
 } from "react-feather";
 
 export default [
@@ -74,6 +75,19 @@ export default [
         title: "لیست سطح های دوره",
         icon: <Circle size={12} />,
         navLink: "/courseLevel",
+      },
+    ],
+  },
+  {
+    id: "ComplexPage",
+    title: "مدیریت مجموعه ها",
+    icon: <Grid size={20} />,
+    children: [
+      {
+        id: "Building",
+        title: "لیست ساختمان ها",
+        icon: <Circle size={12} />,
+        navLink: "/building",
       },
     ],
   },
