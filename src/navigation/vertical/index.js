@@ -101,6 +101,12 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/departments",
       },
+      {
+        id: "Term",
+        title: "لیست ترم ها",
+        icon: <Circle size={12} />,
+        navLink: "/terms",
+      },
     ],
   },
   {
