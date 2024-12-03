@@ -89,6 +89,12 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/building",
       },
+      {
+        id: "ClassRoom",
+        title: "لیست کلاس ها",
+        icon: <Circle size={12} />,
+        navLink: "/classRooms",
+      },
     ],
   },
   {
