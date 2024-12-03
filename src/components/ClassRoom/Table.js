@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { getStatusList } from "../../services/api/Status";
 import {
   Card,
   DropdownItem,
@@ -12,38 +11,39 @@ import {
 import { Edit2, MoreHorizontal } from "react-feather";
 import ErrorComponent from "../common/ErrorComponent";
 import DataTable from "react-data-table-component";
-import StatusListCustomHeader from "./CustomHeader";
+import { getAllClassRooms } from "../../services/api/ClassRoom";
+import ClassRoomsListTableHeader from "./CustomHeader";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 
-function StatusListTable() {
+function ClassRoomsListTable() {
   const [editId, setEditId] = useState("");
   const [createOrEditModal, setCreateOrEditModal] = useState(false);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["statusList"],
-    queryFn: getStatusList,
+    queryKey: ["classList"],
+    queryFn: getAllClassRooms,
   });
 
   const columns = [
     {
-      name: "نام وضعیت",
+      name: "نام کلاس",
       center: true,
-      selector: (row) => row.statusName,
+      selector: (row) => row.classRoomName,
     },
     {
-      name: "توضیحات",
+      name: "ظرفیت",
       center: true,
-      selector: (row) => row.describe,
+      selector: (row) => row.capacity,
     },
     {
-      name: "شناسه وضعیت",
+      name: "نام ساختمان کلاس",
       center: true,
-      selector: (row) => row.id,
+      selector: (row) => row.buildingName,
     },
     {
-      name: "َشماره وضعیت",
+      name: "تاریخ ثبت کلاس",
       center: true,
-      selector: (row) => row.statusNumber,
+      selector: (row) => row.insertDate.slice(0, 10),
     },
     {
       name: "عملیات",
@@ -92,7 +92,7 @@ function StatusListTable() {
           className="react-dataTable"
           data={data?.data}
           subHeaderComponent={
-            <StatusListCustomHeader
+            <ClassRoomsListTableHeader
               editId={editId}
               setEditId={setEditId}
               createOrEditModal={createOrEditModal}
@@ -105,4 +105,4 @@ function StatusListTable() {
   );
 }
 
-export default StatusListTable;
+export default ClassRoomsListTable;

@@ -18,6 +18,7 @@ import {
 import toast from "react-hot-toast";
 import BuildingListCustomHeader from "./CustomHeader";
 import { showApplyChangesSwal } from "../../utility/Utils";
+import "@styles/react/libs/tables/react-dataTable-component.scss";
 
 function BuildingListTable() {
   const [editId, setEditId] = useState("");
