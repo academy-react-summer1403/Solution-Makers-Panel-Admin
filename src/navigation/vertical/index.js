@@ -95,6 +95,12 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/classRooms",
       },
+      {
+        id: "Department",
+        title: "لیست دپارتمان ها",
+        icon: <Circle size={12} />,
+        navLink: "/departments",
+      },
     ],
   },
   {
