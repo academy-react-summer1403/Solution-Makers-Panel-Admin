@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import Avatar from "@components/avatar";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Check, X } from "react-feather";
 import {
   Card,
@@ -34,6 +34,7 @@ const CoursesListTable = () => {
   });
 
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["courses"],
@@ -203,9 +204,15 @@ const CoursesListTable = () => {
             </DropdownToggle>
             <DropdownMenu container="body">
               <DropdownItem
-                tag={Link}
+                tag="span"
                 className="w-100"
-                to={`/courses/view/${row.courseId}`}
+                onClick={() => {
+                  if (row.isActive) {
+                    navigate(`/courses/view/${row.courseId}`);
+                  } else {
+                    toast.error("لطفا ابتدا دوره را فعال کنید");
+                  }
+                }}
               >
                 <FileText size={14} className="me-50" />
                 <span className="align-middle">جزئیات دوره</span>

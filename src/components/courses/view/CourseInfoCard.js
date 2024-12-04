@@ -2,7 +2,7 @@ import { Card, CardBody, Button, Badge } from "reactstrap";
 import { showApplyChangesSwal } from "../../../utility/Utils";
 import { Users, MessageSquare } from "react-feather";
 import "@styles/react/libs/react-select/_react-select.scss";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   activateOrDeactiveCourse,
@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 
 const CourseInfoCard = ({ toggleTab }) => {
   const { courseId } = useParams();
+  const navigate = useNavigate();
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["courseDetails", courseId],
@@ -180,7 +181,9 @@ const CourseInfoCard = ({ toggleTab }) => {
               outline
               onClick={() => {
                 showApplyChangesSwal(() =>
-                  mutateAsync({ active: false, id: courseId })
+                  mutateAsync({ active: false, id: courseId }).then(() =>
+                    navigate("/courses")
+                  )
                 );
               }}
             >
