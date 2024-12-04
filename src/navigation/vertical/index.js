@@ -7,6 +7,7 @@ import {
   MessageCircle,
   File,
   Grid,
+  Command,
 } from "react-feather";
 
 export default [
@@ -106,6 +107,19 @@ export default [
         title: "لیست ترم ها",
         icon: <Circle size={12} />,
         navLink: "/terms",
+      },
+    ],
+  },
+  {
+    id: "AssistancePage",
+    title: "مدیریت پشتیبانی دوره ها",
+    icon: <Command size={20} />,
+    children: [
+      {
+        id: "CourseAssistance",
+        title: "لیست پشتیبان ها",
+        icon: <Circle size={12} />,
+        navLink: "/courseAssistance",
       },
     ],
   },
