@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  Button,
   Card,
   CardBody,
   CardHeader,
@@ -26,8 +27,19 @@ import {
   getUsersList,
   reverseToActiveUser,
 } from "../../../services/api/Users";
+import "@styles/react/libs/tables/react-dataTable-component.scss";
+import ErrorComponent from "../../common/ErrorComponent";
 
-function UsersListTable() {
+function UsersListTable({
+  RowsOfPage,
+  needUserId,
+  needAddNewUser,
+  setStep,
+  setObj,
+  editObj,
+  setEditObj,
+  setEditStep,
+}) {
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,7 +55,13 @@ function UsersListTable() {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["users"],
     queryFn: () =>
-      getUsersList(currentPage, searchTerm, currentRole, currentStatus),
+      getUsersList(
+        currentPage,
+        searchTerm,
+        currentRole,
+        currentStatus,
+        RowsOfPage
+      ),
   });
 
   const { mutateAsync: deleteUserMutate } = useMutation({
@@ -68,94 +86,170 @@ function UsersListTable() {
     refetch();
   }, [currentPage, currentRole, currentStatus]);
 
-  const columns = [
-    {
-      name: "نام",
-      center: true,
-      selector: (row) => row.fname,
-    },
-    {
-      name: "نام خانوادگی",
-      center: true,
-      selector: (row) => row.lname,
-    },
-    {
-      name: "ایمیل",
-      center: true,
-      selector: (row) => row.gmail,
-    },
-    {
-      name: "َشماره همراه",
-      center: true,
-      selector: (row) => row.phoneNumber,
-    },
-    {
-      name: "وضعیت",
-      center: true,
-      cell: (row) => {
-        if (row.active == "True") {
-          return (
-            <span
-              className="rounded-1"
-              style={{
-                padding: 4,
-                backgroundColor: "#cafade",
-                color: "#28c76f",
-              }}
-            >
-              فعال
-            </span>
-          );
-        } else {
-          return (
-            <span
-              className="rounded-1"
-              style={{
-                padding: 4,
-                backgroundColor: "#ffdbdb",
-                color: "#ff0000",
-              }}
-            >
-              غیر فعال
-            </span>
-          );
-        }
+  let columns;
+
+  if (needUserId) {
+    columns = [
+      {
+        name: "نام",
+        center: true,
+        selector: (row) => row.fname,
       },
-    },
-    {
-      name: "عملیات",
-      center: true,
-      cell: (row) => (
-        <div className="column-action">
-          <UncontrolledDropdown>
-            <DropdownToggle tag="div" className="btn btn-sm">
-              <MoreHorizontal size={14} className="cursor-pointer" />
-            </DropdownToggle>
-            <DropdownMenu container="body">
-              <DropdownItem
-                tag={Link}
-                to={`/users/view/${row.id}`}
-                className="w-100"
+      {
+        name: "نام خانوادگی",
+        center: true,
+        selector: (row) => row.lname,
+      },
+      {
+        name: "َشماره همراه",
+        center: true,
+        selector: (row) => row.phoneNumber,
+      },
+      {
+        name: "وضعیت",
+        center: true,
+        cell: (row) => {
+          if (row.active == "True") {
+            return (
+              <span
+                className="rounded-1"
+                style={{
+                  padding: 4,
+                  backgroundColor: "#cafade",
+                  color: "#28c76f",
+                }}
               >
-                <FileText size={14} className="me-50" />
-                <span className="align-middle">جزئیات</span>
-              </DropdownItem>
-              <DropdownItem
-                className="w-100"
-                onClick={() => deleteUserMutate(row.id)}
+                فعال
+              </span>
+            );
+          } else {
+            return (
+              <span
+                className="rounded-1"
+                style={{
+                  padding: 4,
+                  backgroundColor: "#ffdbdb",
+                  color: "#ff0000",
+                }}
               >
-                <Trash size={14} className="me-50" />
-                <span className="align-middle">حذف</span>
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-        </div>
-      ),
-    },
-  ];
+                غیر فعال
+              </span>
+            );
+          }
+        },
+      },
+      {
+        name: "انتخاب",
+        center: true,
+        cell: (row) => (
+          <Button
+            color="primary"
+            onClick={() => {
+              if (editObj) {
+                setEditObj((prev) => ({ ...prev, userId: row.id }));
+                setEditStep(2);
+                toast.success("کاربر انتخاب شد");
+              } else {
+                setObj({ userId: row.id });
+                setStep(2);
+              }
+            }}
+          >
+            انتخاب
+          </Button>
+        ),
+      },
+    ];
+  } else {
+    columns = [
+      {
+        name: "نام",
+        center: true,
+        selector: (row) => row.fname,
+      },
+      {
+        name: "نام خانوادگی",
+        center: true,
+        selector: (row) => row.lname,
+      },
+      {
+        name: "ایمیل",
+        center: true,
+        selector: (row) => row.gmail,
+      },
+      {
+        name: "َشماره همراه",
+        center: true,
+        selector: (row) => row.phoneNumber,
+      },
+      {
+        name: "وضعیت",
+        center: true,
+        cell: (row) => {
+          if (row.active == "True") {
+            return (
+              <span
+                className="rounded-1"
+                style={{
+                  padding: 4,
+                  backgroundColor: "#cafade",
+                  color: "#28c76f",
+                }}
+              >
+                فعال
+              </span>
+            );
+          } else {
+            return (
+              <span
+                className="rounded-1"
+                style={{
+                  padding: 4,
+                  backgroundColor: "#ffdbdb",
+                  color: "#ff0000",
+                }}
+              >
+                غیر فعال
+              </span>
+            );
+          }
+        },
+      },
+      {
+        name: "عملیات",
+        center: true,
+        cell: (row) => (
+          <div className="column-action">
+            <UncontrolledDropdown>
+              <DropdownToggle tag="div" className="btn btn-sm">
+                <MoreHorizontal size={14} className="cursor-pointer" />
+              </DropdownToggle>
+              <DropdownMenu container="body">
+                <DropdownItem
+                  tag={Link}
+                  to={`/users/view/${row.id}`}
+                  className="w-100"
+                >
+                  <FileText size={14} className="me-50" />
+                  <span className="align-middle">جزئیات</span>
+                </DropdownItem>
+                <DropdownItem
+                  className="w-100"
+                  onClick={() => deleteUserMutate(row.id)}
+                >
+                  <Trash size={14} className="me-50" />
+                  <span className="align-middle">حذف</span>
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
+          </div>
+        ),
+      },
+    ];
+  }
 
   const CustomPagination = () => {
-    const count = Number(Math.ceil(data?.data.totalCount / 10));
+    const count = Number(Math.ceil(data?.data.totalCount / RowsOfPage));
     return (
       <div className="d-flex justify-content-center">
         <ReactPaginate
@@ -180,7 +274,7 @@ function UsersListTable() {
   };
 
   if (error) {
-    return <span>خطا در دریافت اطلاعات</span>;
+    return <ErrorComponent />;
   }
 
   return (
@@ -249,6 +343,9 @@ function UsersListTable() {
                 setSearchTerm={setSearchTerm}
                 setCurrentPage={setCurrentPage}
                 refetch={refetch}
+                needAddNewUser={needAddNewUser}
+                editObj={editObj}
+                setEditStep={setEditStep}
               />
             }
           />

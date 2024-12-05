@@ -1,21 +1,18 @@
 import { BookOpen, CheckCircle, MinusCircle, Slash } from "react-feather";
-import { Col } from "reactstrap";
+import { Col, Spinner } from "reactstrap";
 import StatsHorizontal from "@components/widgets/stats/StatsHorizontal";
 import { useQuery } from "@tanstack/react-query";
 import { getCoursesStatistics } from "../../../services/api/Courses";
+import ErrorComponent from "../../common/ErrorComponent";
 
 function CoursesListTopCards() {
-  const { data, isLoading, error } = useQuery({
+  const { data, error } = useQuery({
     queryKey: ["nums"],
     queryFn: getCoursesStatistics,
   });
 
-  if (isLoading) {
-    return <span>loading data ...</span>
-  }
-
   if (error) {
-    return <span>خطا در دریافت اطلاعات</span>
+    return <ErrorComponent />;
   }
 
   return (
@@ -26,7 +23,9 @@ function CoursesListTopCards() {
           statTitle="مجموع دوره های سایت"
           icon={<BookOpen size={20} />}
           renderStats={
-            <h3 className="fw-bolder mb-75">{data.data.courseDtos.length}</h3>
+            <h3 className="fw-bolder mb-75">
+              {data?.data.courseDtos.length || <Spinner color="primary" />}
+            </h3>
           }
         />
       </Col>
@@ -37,7 +36,8 @@ function CoursesListTopCards() {
           icon={<CheckCircle size={20} />}
           renderStats={
             <h3 className="fw-bolder mb-75">
-              {data.data.courseDtos.filter((course) => course.isActive).length}
+              {data?.data.courseDtos.filter((course) => course.isActive)
+                .length || <Spinner color="primary" />}
             </h3>
           }
         />
@@ -49,7 +49,8 @@ function CoursesListTopCards() {
           icon={<Slash size={20} />}
           renderStats={
             <h3 className="fw-bolder mb-75">
-              {data.data.courseDtos.filter((course) => course.isExpire).length}
+              {data?.data.courseDtos.filter((course) => course.isExpire)
+                .length || <Spinner color="primary" />}
             </h3>
           }
         />
@@ -61,7 +62,8 @@ function CoursesListTopCards() {
           icon={<MinusCircle size={20} />}
           renderStats={
             <h3 className="fw-bolder mb-75">
-              {data.data.courseDtos.filter((course) => course.isdelete).length}
+              {data?.data.courseDtos.filter((course) => course.isdelete)
+                .length || <Spinner color="primary" />}
             </h3>
           }
         />

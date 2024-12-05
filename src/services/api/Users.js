@@ -4,10 +4,11 @@ export const getUsersList = (
   currentPage,
   searchTerm,
   currentRole,
-  currentStatus
+  currentStatus,
+  RowsOfPage
 ) =>
   instance.get(
-    `/User/UserMannage?PageNumber=${currentPage}&RowsOfPage=10&SortingCol=DESC&SortType=InsertDate${
+    `/User/UserMannage?PageNumber=${currentPage}&RowsOfPage=${RowsOfPage}&SortingCol=DESC&SortType=InsertDate${
       searchTerm ? `&Query=${searchTerm}` : ""
     }${currentRole.value ? `&roleId=${currentRole.value}` : ""}${
       currentStatus.value ? `&IsActiveUser=${currentStatus.value}` : ""

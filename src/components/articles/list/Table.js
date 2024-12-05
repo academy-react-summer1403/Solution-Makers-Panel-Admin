@@ -21,6 +21,7 @@ import ArticlesListCustomHeader from "./CustomHeader";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import toast from "react-hot-toast";
 import { showApplyChangesSwal } from "../../../utility/Utils";
+import ErrorComponent from "../../common/ErrorComponent";
 
 function ArticlesListTable() {
   const queryClient = useQueryClient();
@@ -230,6 +231,10 @@ function ArticlesListTable() {
 
   if (isLoading) {
     return <Spinner color="primary" />;
+  }
+
+  if (error) {
+    return <ErrorComponent />;
   }
 
   return (
