@@ -121,6 +121,12 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/courseAssistance",
       },
+      {
+        id: "AssistanceWork",
+        title: "لیست تسک های پشتیبان ها",
+        icon: <Circle size={12} />,
+        navLink: "/assistanceWork",
+      },
     ],
   },
   {
