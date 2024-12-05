@@ -10,6 +10,7 @@ import {
   ModalBody,
   ModalHeader,
   Row,
+  Spinner,
 } from "reactstrap";
 import { Eye } from "react-feather";
 import Select from "react-select";
@@ -30,6 +31,8 @@ import toast from "react-hot-toast";
 import { getAllTeachers } from "../../../services/api/Teachers";
 import { actions, isAccept } from "./actions";
 import ReplyModal from "../../modals/ReplyModal";
+import "@styles/react/libs/tables/react-dataTable-component.scss";
+import ErrorComponent from "../../common/ErrorComponent";
 
 function CommentsListTable() {
   const queryClient = useQueryClient();
@@ -142,22 +145,27 @@ function CommentsListTable() {
   const columns = [
     {
       name: "کاربر",
+      center: true,
       selector: (row) => row.userFullName,
     },
     {
       name: "عنوان کامنت",
+      center: true,
       selector: (row) => row.commentTitle,
     },
     {
       name: "متن کامنت",
+      center: true,
       selector: (row) => row.describe,
     },
     {
       name: "وضعیت",
+      center: true,
       cell: (row) => isAccept(row),
     },
     {
       name: "پاسخ ها",
+      center: true,
       cell: (row) => {
         return (
           <span
@@ -175,6 +183,7 @@ function CommentsListTable() {
     },
     {
       name: "عملیات",
+      center: true,
       cell: (row) =>
         actions(
           row,
@@ -194,22 +203,27 @@ function CommentsListTable() {
   const repliesColumns = [
     {
       name: "کاربر",
+      center: true,
       selector: (row) => row.author,
     },
     {
       name: "عنوان",
+      center: true,
       selector: (row) => row.title,
     },
     {
       name: "متن کامنت",
+      center: true,
       selector: (row) => row.describe,
     },
     {
       name: "وضعیت",
+      center: true,
       cell: (row) => isAccept(row),
     },
     {
       name: "عملیات",
+      center: true,
       cell: (row) =>
         actions(
           row,
@@ -250,6 +264,14 @@ function CommentsListTable() {
       </div>
     );
   };
+
+  if (isLoading) {
+    return <Spinner color="primary" />;
+  }
+
+  if (error) {
+    return <ErrorComponent />;
+  }
 
   return (
     <>
@@ -332,13 +354,17 @@ function CommentsListTable() {
           <span style={{ fontSize: 20 }}>پاسخ ها</span>
         </ModalHeader>
         <ModalBody id="replyModal">
-          <DataTable
-            noHeader
-            responsive
-            columns={repliesColumns}
-            data={allReplies}
-            className="react-dataTable"
-          />
+          {repliesError ? (
+            <ErrorComponent />
+          ) : (
+            <DataTable
+              noHeader
+              responsive
+              columns={repliesColumns}
+              data={allReplies}
+              className="react-dataTable"
+            />
+          )}
         </ModalBody>
       </Modal>
 

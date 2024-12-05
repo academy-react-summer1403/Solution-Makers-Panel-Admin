@@ -10,6 +10,8 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Spinner,
+  Button,
 } from "reactstrap";
 import { Edit2, MoreHorizontal, FileText } from "react-feather";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
@@ -23,8 +25,19 @@ import {
   deleteCourse,
   getAllCoursesList,
 } from "../../../services/api/Courses";
+import ErrorComponent from "../../common/ErrorComponent";
 
-const CoursesListTable = () => {
+const CoursesListTable = ({
+  RowsOfPage,
+  needAddNewCourse,
+  needCourseId,
+  setStep,
+  setObj,
+  editObj,
+  setEditObj,
+  setEditStep,
+  setEditModal,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [currentStatus, setCurrentStatus] = useState({
@@ -38,10 +51,10 @@ const CoursesListTable = () => {
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["courses"],
-    queryFn: () => getAllCoursesList(currentPage, searchTerm),
+    queryFn: () => getAllCoursesList(currentPage, searchTerm, RowsOfPage),
   });
 
-  const { mutateAsync, isPending, isSuccess, isError } = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: activateOrDeactiveCourse,
     onSuccess: () => {
       queryClient.invalidateQueries("courses");
@@ -79,204 +92,340 @@ const CoursesListTable = () => {
     }
   };
 
-  const columns = [
-    {
-      name: "نام دوره",
-      minWidth: "300px",
-      selector: (row) => row.title,
-      cell: (row) => (
-        <div className="d-flex justify-content-left align-items-center">
-          {renderCourse(row)}
-          <div className="d-flex">
-            <span>{row.title}</span>
+  let columns;
+
+  if (needCourseId) {
+    columns = [
+      {
+        name: "نام دوره",
+        minWidth: "300px",
+        selector: (row) => row.title,
+        cell: (row) => (
+          <div className="d-flex justify-content-left align-items-center">
+            {renderCourse(row)}
+            <div className="d-flex">
+              <span>{row.title}</span>
+            </div>
           </div>
-        </div>
-      ),
-    },
-    {
-      name: "مدرس دوره",
-      selector: (row) => row.fullName,
-    },
-    {
-      name: "نوع دوره",
-      selector: (row) => row.typeName,
-    },
-    {
-      name: "سطح دوره",
-      selector: (row) => row.levelName,
-    },
-    {
-      name: "وضعیت موجودی",
-      cell: (row) => {
-        if (row.isdelete) {
-          return (
-            <span
-              style={{
-                padding: 4,
-                backgroundColor: "#ffdbdb",
-                color: "#ff0000",
-                cursor: "pointer",
-              }}
-              className="rounded-1"
-              onClick={() =>
-                showApplyChangesSwal(() =>
-                  deletionMutate({ active: false, id: row.courseId })
-                )
-              }
-            >
-              ناموجود
-            </span>
-          );
-        } else {
-          return (
-            <span
-              style={{
-                padding: 4,
-                backgroundColor: "#cafade",
-                color: "#28c76f",
-                cursor: "pointer",
-              }}
-              className="rounded-1"
-              onClick={() =>
-                showApplyChangesSwal(() =>
-                  deletionMutate({ active: true, id: row.courseId })
-                )
-              }
-            >
-              موجود
-            </span>
-          );
-        }
+        ),
       },
-    },
-    {
-      name: "وضعیت",
-      selector: (row) => row.isActive,
-      cell: (row) => {
-        if (row.isActive) {
-          return (
-            <span
-              style={{
-                padding: 4,
-                backgroundColor: "#cafade",
-                color: "#28c76f",
-                cursor: "pointer",
-              }}
-              className="rounded-1"
-              onClick={() => {
-                showApplyChangesSwal(() =>
-                  mutateAsync({ active: false, id: row.courseId })
-                );
-              }}
-            >
-              فعال
-            </span>
-          );
-        } else {
-          return (
-            <span
-              style={{
-                padding: 4,
-                backgroundColor: "#ffdbdb",
-                color: "#ff0000",
-                cursor: "pointer",
-              }}
-              className="rounded-1"
-              onClick={() => {
-                showApplyChangesSwal(() =>
-                  mutateAsync({ active: true, id: row.courseId })
-                );
-              }}
-            >
-              غیر فعال
-            </span>
-          );
-        }
+      {
+        name: "وضعیت موجودی",
+        center: true,
+        cell: (row) => {
+          if (row.isdelete) {
+            return (
+              <span
+                style={{
+                  padding: 4,
+                  backgroundColor: "#ffdbdb",
+                  color: "#ff0000",
+                  cursor: "pointer",
+                }}
+                className="rounded-1"
+                onClick={() =>
+                  showApplyChangesSwal(() =>
+                    deletionMutate({ active: false, id: row.courseId })
+                  )
+                }
+              >
+                ناموجود
+              </span>
+            );
+          } else {
+            return (
+              <span
+                style={{
+                  padding: 4,
+                  backgroundColor: "#cafade",
+                  color: "#28c76f",
+                  cursor: "pointer",
+                }}
+                className="rounded-1"
+                onClick={() =>
+                  showApplyChangesSwal(() =>
+                    deletionMutate({ active: true, id: row.courseId })
+                  )
+                }
+              >
+                موجود
+              </span>
+            );
+          }
+        },
       },
-    },
-    {
-      name: "عملیات",
-      cell: (row) => (
-        <div className="column-action">
-          <UncontrolledDropdown>
-            <DropdownToggle tag="div" className="btn btn-sm">
-              <MoreHorizontal size={14} className="cursor-pointer" />
-            </DropdownToggle>
-            <DropdownMenu container="body">
-              <DropdownItem
-                tag="span"
-                className="w-100"
+      {
+        name: "وضعیت",
+        center: true,
+        selector: (row) => row.isActive,
+        cell: (row) => {
+          if (row.isActive) {
+            return (
+              <span
+                style={{
+                  padding: 4,
+                  backgroundColor: "#cafade",
+                  color: "#28c76f",
+                  cursor: "pointer",
+                }}
+                className="rounded-1"
                 onClick={() => {
-                  if (row.isActive) {
-                    navigate(`/courses/view/${row.courseId}`);
-                  } else {
-                    toast.error("لطفا ابتدا دوره را فعال کنید");
-                  }
+                  showApplyChangesSwal(() =>
+                    mutateAsync({ active: false, id: row.courseId })
+                  );
                 }}
               >
-                <FileText size={14} className="me-50" />
-                <span className="align-middle">جزئیات دوره</span>
-              </DropdownItem>
-              {row.isActive ? (
+                فعال
+              </span>
+            );
+          } else {
+            return (
+              <span
+                style={{
+                  padding: 4,
+                  backgroundColor: "#ffdbdb",
+                  color: "#ff0000",
+                  cursor: "pointer",
+                }}
+                className="rounded-1"
+                onClick={() => {
+                  showApplyChangesSwal(() =>
+                    mutateAsync({ active: true, id: row.courseId })
+                  );
+                }}
+              >
+                غیر فعال
+              </span>
+            );
+          }
+        },
+      },
+      {
+        name: "انتخاب",
+        center: true,
+        cell: (row) => (
+          <Button
+            color="primary"
+            onClick={() => {
+              if (editObj) {
+                setEditObj((prev) => ({ ...prev, courseId: row.courseId }));
+                toast.success("دوره انتخاب شد");
+              } else {
+                setObj((prev) => ({ ...prev, courseId: row.courseId }));
+              }
+            }}
+          >
+            انتخاب
+          </Button>
+        ),
+      },
+    ];
+  } else {
+    columns = [
+      {
+        name: "نام دوره",
+        minWidth: "300px",
+        selector: (row) => row.title,
+        cell: (row) => (
+          <div className="d-flex justify-content-left align-items-center">
+            {renderCourse(row)}
+            <div className="d-flex">
+              <span>{row.title}</span>
+            </div>
+          </div>
+        ),
+      },
+      {
+        name: "مدرس دوره",
+        center: true,
+        selector: (row) => row.fullName,
+      },
+      {
+        name: "نوع دوره",
+        center: true,
+        selector: (row) => row.typeName,
+      },
+      {
+        name: "سطح دوره",
+        center: true,
+        selector: (row) => row.levelName,
+      },
+      {
+        name: "وضعیت موجودی",
+        center: true,
+        cell: (row) => {
+          if (row.isdelete) {
+            return (
+              <span
+                style={{
+                  padding: 4,
+                  backgroundColor: "#ffdbdb",
+                  color: "#ff0000",
+                  cursor: "pointer",
+                }}
+                className="rounded-1"
+                onClick={() =>
+                  showApplyChangesSwal(() =>
+                    deletionMutate({ active: false, id: row.courseId })
+                  )
+                }
+              >
+                ناموجود
+              </span>
+            );
+          } else {
+            return (
+              <span
+                style={{
+                  padding: 4,
+                  backgroundColor: "#cafade",
+                  color: "#28c76f",
+                  cursor: "pointer",
+                }}
+                className="rounded-1"
+                onClick={() =>
+                  showApplyChangesSwal(() =>
+                    deletionMutate({ active: true, id: row.courseId })
+                  )
+                }
+              >
+                موجود
+              </span>
+            );
+          }
+        },
+      },
+      {
+        name: "وضعیت",
+        center: true,
+        selector: (row) => row.isActive,
+        cell: (row) => {
+          if (row.isActive) {
+            return (
+              <span
+                style={{
+                  padding: 4,
+                  backgroundColor: "#cafade",
+                  color: "#28c76f",
+                  cursor: "pointer",
+                }}
+                className="rounded-1"
+                onClick={() => {
+                  showApplyChangesSwal(() =>
+                    mutateAsync({ active: false, id: row.courseId })
+                  );
+                }}
+              >
+                فعال
+              </span>
+            );
+          } else {
+            return (
+              <span
+                style={{
+                  padding: 4,
+                  backgroundColor: "#ffdbdb",
+                  color: "#ff0000",
+                  cursor: "pointer",
+                }}
+                className="rounded-1"
+                onClick={() => {
+                  showApplyChangesSwal(() =>
+                    mutateAsync({ active: true, id: row.courseId })
+                  );
+                }}
+              >
+                غیر فعال
+              </span>
+            );
+          }
+        },
+      },
+      {
+        name: "عملیات",
+        center: true,
+        cell: (row) => (
+          <div className="column-action">
+            <UncontrolledDropdown>
+              <DropdownToggle tag="div" className="btn btn-sm">
+                <MoreHorizontal size={14} className="cursor-pointer" />
+              </DropdownToggle>
+              <DropdownMenu container="body">
                 <DropdownItem
                   tag="span"
                   className="w-100"
                   onClick={() => {
-                    showApplyChangesSwal(() =>
-                      mutateAsync({ active: false, id: row.courseId })
-                    );
+                    if (row.isActive) {
+                      navigate(`/courses/view/${row.courseId}`);
+                    } else {
+                      toast.error("لطفا ابتدا دوره را فعال کنید");
+                    }
                   }}
                 >
-                  <Edit2 size={14} className="me-50" />
-                  <span className="align-middle">غیر فعال کردن</span>
+                  <FileText size={14} className="me-50" />
+                  <span className="align-middle">جزئیات دوره</span>
                 </DropdownItem>
-              ) : (
-                <DropdownItem
-                  tag="span"
-                  className="w-100"
-                  onClick={() => {
-                    showApplyChangesSwal(() =>
-                      mutateAsync({ active: true, id: row.courseId })
-                    );
-                  }}
-                >
-                  <Edit2 size={14} className="me-50" />
-                  <span className="align-middle">فعال کردن</span>
-                </DropdownItem>
-              )}
-              {row.isdelete ? (
-                <DropdownItem
-                  tag="span"
-                  className="w-100"
-                  onClick={() =>
-                    showApplyChangesSwal(() =>
-                      deletionMutate({ active: false, id: row.courseId })
-                    )
-                  }
-                >
-                  <Check size={14} className="me-50" />
-                  <span className="align-middle">موجود کردن</span>
-                </DropdownItem>
-              ) : (
-                <DropdownItem
-                  tag="span"
-                  className="w-100"
-                  onClick={() =>
-                    showApplyChangesSwal(() =>
-                      deletionMutate({ active: true, id: row.courseId })
-                    )
-                  }
-                >
-                  <X size={14} className="me-50" />
-                  <span className="align-middle">حذف کردن</span>
-                </DropdownItem>
-              )}
-            </DropdownMenu>
-          </UncontrolledDropdown>
-        </div>
-      ),
-    },
-  ];
+                {row.isActive ? (
+                  <DropdownItem
+                    tag="span"
+                    className="w-100"
+                    onClick={() => {
+                      showApplyChangesSwal(() =>
+                        mutateAsync({ active: false, id: row.courseId })
+                      );
+                    }}
+                  >
+                    <Edit2 size={14} className="me-50" />
+                    <span className="align-middle">غیر فعال کردن</span>
+                  </DropdownItem>
+                ) : (
+                  <DropdownItem
+                    tag="span"
+                    className="w-100"
+                    onClick={() => {
+                      showApplyChangesSwal(() =>
+                        mutateAsync({ active: true, id: row.courseId })
+                      );
+                    }}
+                  >
+                    <Edit2 size={14} className="me-50" />
+                    <span className="align-middle">فعال کردن</span>
+                  </DropdownItem>
+                )}
+                {row.isdelete ? (
+                  <DropdownItem
+                    tag="span"
+                    className="w-100"
+                    onClick={() =>
+                      showApplyChangesSwal(() =>
+                        deletionMutate({ active: false, id: row.courseId })
+                      )
+                    }
+                  >
+                    <Check size={14} className="me-50" />
+                    <span className="align-middle">موجود کردن</span>
+                  </DropdownItem>
+                ) : (
+                  <DropdownItem
+                    tag="span"
+                    className="w-100"
+                    onClick={() =>
+                      showApplyChangesSwal(() =>
+                        deletionMutate({ active: true, id: row.courseId })
+                      )
+                    }
+                  >
+                    <X size={14} className="me-50" />
+                    <span className="align-middle">حذف کردن</span>
+                  </DropdownItem>
+                )}
+              </DropdownMenu>
+            </UncontrolledDropdown>
+          </div>
+        ),
+      },
+    ];
+  }
 
   useEffect(() => {
     refetch();
@@ -288,7 +437,7 @@ const CoursesListTable = () => {
 
   // ** Custom Pagination
   const CustomPagination = () => {
-    const count = Number(Math.ceil(data.data.totalCount / 10));
+    const count = Number(Math.ceil(data.data.totalCount / RowsOfPage));
     return (
       <div className="d-flex justify-content-center">
         <ReactPaginate
@@ -313,11 +462,11 @@ const CoursesListTable = () => {
   };
 
   if (isLoading) {
-    return <span>loading data ...</span>;
+    return <Spinner color="primary" />;
   }
 
   if (error) {
-    return <span>خطا در دریافت اطلاعات</span>;
+    return <ErrorComponent />;
   }
 
   return (
@@ -340,6 +489,12 @@ const CoursesListTable = () => {
               currentStatus={currentStatus}
               setCurrentStatus={setCurrentStatus}
               refetch={refetch}
+              needAddNewCourse={needAddNewCourse}
+              setStep={setStep}
+              setEditStep={setEditStep}
+              setObj={setObj}
+              editObj={editObj}
+              setEditModal={setEditModal}
             />
           }
         />

@@ -11,7 +11,7 @@ function UsersList() {
       </Row>
       <Row>
         <Col>
-          <UsersListTable />
+          <UsersListTable RowsOfPage={10} needAddNewUser={true} />
         </Col>
       </Row>
     </div>

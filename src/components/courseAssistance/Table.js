@@ -1,24 +1,29 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
+  Modal,
+  ModalBody,
+  ModalHeader,
   Spinner,
   UncontrolledDropdown,
 } from "reactstrap";
 import { Edit2, MoreHorizontal } from "react-feather";
 import ErrorComponent from "../common/ErrorComponent";
 import DataTable from "react-data-table-component";
-
 import { getAllAssistance } from "../../services/api/Assistance";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import CourseAssistanceListHeader from "./CustomHeader";
+import UsersListTable from "../users/list/Table";
+import CoursesListTable from "../courses/list/Table";
 
 function CourseAssistanceListTable() {
-  const [editId, setEditId] = useState("");
-  const [createOrEditModal, setCreateOrEditModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [editStep, setEditStep] = useState(1);
+  const [editObj, setEditObj] = useState({});
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["assistanceList"],
@@ -55,8 +60,12 @@ function CourseAssistanceListTable() {
                 tag="span"
                 className="w-100"
                 onClick={() => {
-                  setEditId(row.id);
-                  setCreateOrEditModal(!createOrEditModal);
+                  setEditModal(!editModal);
+                  setEditObj({
+                    id: row.id,
+                    courseId: row.courseId,
+                    userId: row.userId,
+                  });
                 }}
               >
                 <Edit2 size={14} className="me-50" />
@@ -69,6 +78,16 @@ function CourseAssistanceListTable() {
     },
   ];
 
+  useEffect(() => {
+    if (!editModal) {
+      setEditStep(1);
+    }
+  }, [editModal]);
+
+  useEffect(() => {
+    console.log(editObj);
+  }, [editObj]);
+
   if (isLoading) {
     return <Spinner color="primary" />;
   }
@@ -78,26 +97,53 @@ function CourseAssistanceListTable() {
   }
 
   return (
-    <Card className="overflow-hidden">
-      <div className="react-dataTable">
-        <DataTable
-          noHeader
-          subHeader
-          responsive
-          columns={columns}
-          className="react-dataTable"
-          data={data?.data}
-          subHeaderComponent={
-            <CourseAssistanceListHeader
-              editId={editId}
-              setEditId={setEditId}
-              createOrEditModal={createOrEditModal}
-              setCreateOrEditModal={setCreateOrEditModal}
+    <>
+      <Card className="overflow-hidden">
+        <div className="react-dataTable">
+          <DataTable
+            noHeader
+            subHeader
+            responsive
+            columns={columns}
+            className="react-dataTable"
+            data={data?.data.reverse()}
+            subHeaderComponent={<CourseAssistanceListHeader />}
+          />
+        </div>
+      </Card>
+
+      <Modal
+        isOpen={editModal}
+        toggle={() => setEditModal(!editModal)}
+        className="modal-dialog-centered modal-lg"
+      >
+        <ModalHeader toggle={() => setEditModal(!editModal)}>
+          {editStep == 1 ? "ویرایش پشتیبان دوره" : "ویرایش دوره پشتیبانی"}
+        </ModalHeader>
+        <ModalBody>
+          {editStep == 1 ? (
+            <UsersListTable
+              RowsOfPage={5}
+              needAddNewUser={false}
+              needUserId={true}
+              setEditStep={setEditStep}
+              editObj={editObj}
+              setEditObj={setEditObj}
             />
-          }
-        />
-      </div>
-    </Card>
+          ) : (
+            <CoursesListTable
+              RowsOfPage={5}
+              needAddNewCourse={false}
+              needCourseId={true}
+              setEditStep={setEditStep}
+              editObj={editObj}
+              setEditObj={setEditObj}
+              setEditModal={setEditModal}
+            />
+          )}
+        </ModalBody>
+      </Modal>
+    </>
   );
 }
 

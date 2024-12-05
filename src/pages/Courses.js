@@ -11,7 +11,7 @@ const CoursesList = () => {
       </Row>
       <Row>
         <Col>
-          <CoursesListTable />
+          <CoursesListTable RowsOfPage={10} needAddNewCourse={true} />
         </Col>
       </Row>
     </div>

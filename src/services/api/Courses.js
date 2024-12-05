@@ -6,9 +6,9 @@ export const getCourseByIdAdmin = (courseId) =>
 export const getCourseByIdUser = (courseId) =>
   instance.get(`/Home/GetCourseDetails?CourseId=${courseId}`);
 
-export const getAllCoursesList = (currentPage, searchTerm) =>
+export const getAllCoursesList = (currentPage, searchTerm, RowsOfPage) =>
   instance.get(
-    `/Course/CourseList?PageNumber=${currentPage}&RowsOfPage=10&SortingCol=DESC&SortType=Expire&${
+    `/Course/CourseList?PageNumber=${currentPage}&RowsOfPage=${RowsOfPage}&SortingCol=DESC&SortType=Expire&${
       searchTerm ? `Query=${searchTerm}` : ""
     }`
   );

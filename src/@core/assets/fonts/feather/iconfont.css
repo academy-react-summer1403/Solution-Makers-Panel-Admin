@@ -23,6 +23,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+@font-face {
+  font-family: yekan;
+  src: url("../../../../assets/fonts/Yekan_Bakh_Fanum_Regular.TTF");
+}
+
+* {
+  font-family: "yekan" !important;
+}
+
 .icon-alert-octagon:before { content: "\e81b"; }
 
 .icon-alert-circle:before { content: "\e81c"; }

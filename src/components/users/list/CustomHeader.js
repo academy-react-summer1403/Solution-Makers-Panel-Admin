@@ -43,6 +43,10 @@ function UsersCustomHeader({
   setSearchTerm,
   setCurrentPage,
   refetch,
+  needAddNewUser,
+  editObj,
+  setEditObj,
+  setEditStep,
 }) {
   const [show, setShow] = useState(false);
 
@@ -95,15 +99,28 @@ function UsersCustomHeader({
                 }}
               />
             </div>
-            <div className="d-flex align-items-center table-header-actions">
-              <Button
-                className="add-new-user"
-                color="primary"
-                onClick={() => setShow(true)}
-              >
-                افزودن کاربر جدید
-              </Button>
-            </div>
+            {needAddNewUser && (
+              <div className="d-flex align-items-center table-header-actions">
+                <Button
+                  className="add-new-user"
+                  color="primary"
+                  onClick={() => setShow(true)}
+                >
+                  افزودن کاربر جدید
+                </Button>
+              </div>
+            )}
+            {editObj && (
+              <div className="d-flex align-items-center table-header-actions">
+                <Button
+                  className="add-new-user"
+                  color="primary"
+                  onClick={() => setEditStep(2)}
+                >
+                  ادامه
+                </Button>
+              </div>
+            )}
           </Col>
         </Row>
       </div>
