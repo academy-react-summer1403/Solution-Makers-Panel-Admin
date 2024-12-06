@@ -1,6 +1,7 @@
 // ** React Imports
+import { useEffect } from "react";
 import { useSkin } from "@hooks/useSkin";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // ** Icons Imports
 import { Facebook, Twitter, Mail, GitHub } from "react-feather";
@@ -19,16 +20,52 @@ import {
   Input,
   Button,
 } from "reactstrap";
+import toast from "react-hot-toast";
 
 // ** Illustrations Imports
 import illustrationsLight from "@src/assets/images/pages/login-v2.svg";
 import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 
-// ** Styles
 import "@styles/react/pages/page-authentication.scss";
+import { loginUser } from "../services/api/Login";
+import { getItem, setItem } from "../services/common/storage";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+const schema = yup.object({
+  phoneOrGmail: yup
+    .string()
+    .required("این فیلد الزامیست")
+    .matches(
+      /([a-zA-Z0-9]+)([\_\.\-{1}])?([a-zA-Z0-9]+)\@([a-zA-Z0-9]+)([\.])([a-zA-Z\.]+)|((0?9)|(\+?989))\d{9}/g,
+      { message: "ایمیل یا شماره وارد شده معتبر نیست" }
+    ),
+  password: yup.string().required("این فیلد الزامیست"),
+});
 
 const Login = () => {
   const { skin } = useSkin();
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      phoneOrGmail: "",
+      password: "",
+    },
+    resolver: yupResolver(schema),
+  });
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (getItem("token")) {
+      navigate("/home");
+    }
+  }, []);
 
   const source = skin === "dark" ? illustrationsDark : illustrationsLight;
 
@@ -102,7 +139,10 @@ const Login = () => {
               </g>
             </g>
           </svg>
-          <h2 className="brand-text text-primary ms-1">Vuexy</h2>
+          <h2 className="brand-text text-primary ms-1">
+            {/* Vuexy */}
+            هگزا اسکواد
+          </h2>
         </Link>
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
           <div className="w-100 d-lg-flex align-items-center justify-content-center px-5">
@@ -115,49 +155,88 @@ const Login = () => {
           sm="12"
         >
           <Col className="px-xl-2 mx-auto" sm="8" md="6" lg="12">
-            <CardTitle tag="h2" className="fw-bold mb-1">
-              Welcome to Vuexy! 👋
+            <CardTitle tag="h2" className="fw-bold mb-1 text-center">
+              {/* Welcome to Vuexy! 👋 */}
+              به پنل ادمین خوش آمدید
             </CardTitle>
-            <CardText className="mb-2">
+            {/* <CardText className="mb-2">
               Please sign-in to your account and start the adventure
-            </CardText>
+            </CardText> */}
             <Form
               className="auth-login-form mt-2"
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={handleSubmit((data, event) => {
+                event.preventDefault();
+                const obj = {
+                  phoneOrGmail: data.phoneOrGmail,
+                  password: data.password,
+                  rememberMe: true,
+                };
+                loginUser(obj).then((res) => {
+                  const exist = res.data.success;
+                  const error = res.data.message;
+                  const token = res.data.token;
+                  if (exist) {
+                    setItem("token", token);
+                    setItem("userId", res.data.id);
+                    setItem("roles", res.data.roles);
+                    toast.success("با موفقیت وارد شدید");
+                    reset();
+                    navigate("/home");
+                  } else {
+                    toast.error(error);
+                  }
+                });
+              })}
             >
-              <div className="mb-1">
-                <Label className="form-label" for="login-email">
-                  Email
+              <div className="mb-1 text-end">
+                <Label className="form-label" for="phoneOrGmail">
+                  ایمیل یا شماره همراه
                 </Label>
-                <Input
-                  type="email"
-                  id="login-email"
-                  placeholder="john@example.com"
-                  autoFocus
+                <Controller
+                  name="phoneOrGmail"
+                  id="phoneOrGmail"
+                  control={control}
+                  render={({ field }) => (
+                    <Input className="text-end" {...field} />
+                  )}
                 />
+                <p style={{ color: "red", marginTop: 5 }}>
+                  {errors.phoneOrGmail?.message}
+                </p>
               </div>
-              <div className="mb-1">
-                <div className="d-flex justify-content-between">
-                  <Label className="form-label" for="login-password">
-                    Password
+              <div className="mb-2 text-end">
+                <div className="text-end">
+                  <Label className="form-label" for="password">
+                    رمز عبور
                   </Label>
-                  <Link to="/forgot-password">
+                  {/* <Link to="/forgot-password">
                     <small>Forgot Password?</small>
-                  </Link>
+                  </Link> */}
                 </div>
-                <InputPasswordToggle
+                <Controller
+                  name="password"
+                  id="password"
+                  control={control}
+                  render={({ field }) => (
+                    <Input className="text-end" {...field} />
+                  )}
+                />
+                <p style={{ color: "red", marginTop: 5 }}>
+                  {errors.password?.message}
+                </p>
+                {/* <InputPasswordToggle
                   className="input-group-merge"
                   id="login-password"
-                />
+                /> */}
               </div>
-              <div className="form-check mb-1">
+              {/* <div className="form-check mb-1">
                 <Input type="checkbox" id="remember-me" />
                 <Label className="form-check-label" for="remember-me">
                   Remember Me
                 </Label>
-              </div>
-              <Button tag={Link} to="/" color="primary" block>
-                Sign in
+              </div> */}
+              <Button type="submit" color="primary" block>
+                ورود به حساب
               </Button>
             </Form>
             <p className="text-center mt-2">

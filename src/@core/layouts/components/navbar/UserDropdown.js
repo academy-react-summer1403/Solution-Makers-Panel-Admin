@@ -22,12 +22,20 @@ import {
   DropdownMenu,
   DropdownToggle,
   DropdownItem,
+  Spinner,
 } from "reactstrap";
 
 // ** Default Avatar Image
 import defaultAvatar from "@src/assets/images/portrait/small/avatar-s-11.jpg";
+import { useQuery } from "@tanstack/react-query";
+import instance from "../../../../services/middleware";
+import { removeItem } from "../../../../services/common/storage";
 
 const UserDropdown = () => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["profileInfo"],
+    queryFn: () => instance.get("/SharePanel/GetProfileInfo"),
+  });
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
       <DropdownToggle
@@ -37,18 +45,24 @@ const UserDropdown = () => {
         onClick={(e) => e.preventDefault()}
       >
         <div className="user-nav d-sm-flex d-none">
-          <span className="user-name fw-bold">John Doe</span>
+          <span className="user-name fw-bold">
+            {data?.data.fName || ""} {data?.data.lName || ""}
+          </span>
           <span className="user-status">Admin</span>
         </div>
-        <Avatar
-          img={defaultAvatar}
-          imgHeight="40"
-          imgWidth="40"
-          status="online"
-        />
+        {isLoading ? (
+          <Spinner color="primary" />
+        ) : (
+          <Avatar
+            img={data?.data.currentPictureAddress || ""}
+            imgHeight="40"
+            imgWidth="40"
+            status="online"
+          />
+        )}
       </DropdownToggle>
       <DropdownMenu end>
-        <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
+        {/* <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
           <User size={14} className="me-75" />
           <span className="align-middle">Profile</span>
         </DropdownItem>
@@ -80,10 +94,18 @@ const UserDropdown = () => {
         <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
           <HelpCircle size={14} className="me-75" />
           <span className="align-middle">FAQ</span>
-        </DropdownItem>
-        <DropdownItem tag={Link} to="/login">
+        </DropdownItem> */}
+        <DropdownItem
+          tag={Link}
+          to="/login"
+          onClick={() => {
+            removeItem("token");
+            removeItem("userId");
+            removeItem("roles");
+          }}
+        >
           <Power size={14} className="me-75" />
-          <span className="align-middle">Logout</span>
+          <span className="align-middle">خروج</span>
         </DropdownItem>
       </DropdownMenu>
     </UncontrolledDropdown>
