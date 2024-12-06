@@ -1,11 +1,19 @@
 import { Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
-import { Info, Users, Grid, MessageSquare, Edit2 } from "react-feather";
+import {
+  Info,
+  Users,
+  Grid,
+  MessageSquare,
+  Edit2,
+  CreditCard,
+} from "react-feather";
 import OtherInfos from "./OtherInfos";
 import EditCourse from "./EditCourse";
 import CourseGroups from "./CourseGroups";
 import CourseComments from "./CourseComments";
 import CourseReserve from "./CourseReserve";
 import CourseUsers from "./CourseUsers";
+import CoursePayments from "./CoursePayments";
 
 const CourseDetailsTabs = ({ active, toggleTab }) => {
   return (
@@ -44,7 +52,13 @@ const CourseDetailsTabs = ({ active, toggleTab }) => {
         <NavItem>
           <NavLink active={active === "6"} onClick={() => toggleTab("6")}>
             <Edit2 className="font-medium-3 me-50" />
-            <span className="fw-bold">ویرایش </span>
+            <span className="fw-bold">ویرایش</span>
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink active={active === "7"} onClick={() => toggleTab("7")}>
+            <CreditCard className="font-medium-3 me-50" />
+            <span className="fw-bold">پرداخت ها</span>
           </NavLink>
         </NavItem>
       </Nav>
@@ -66,6 +80,9 @@ const CourseDetailsTabs = ({ active, toggleTab }) => {
         </TabPane>
         <TabPane tabId="6">
           <EditCourse />
+        </TabPane>
+        <TabPane tabId="7">
+          <CoursePayments />
         </TabPane>
       </TabContent>
     </>
