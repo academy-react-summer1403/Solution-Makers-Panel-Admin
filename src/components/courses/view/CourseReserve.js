@@ -29,6 +29,7 @@ import {
   getCourseReserveList,
   submitCourseReserve,
 } from "../../../services/api/Courses";
+import ErrorComponent from "../../common/ErrorComponent";
 
 const CourseReserve = ({ toggleTab }) => {
   const { courseId } = useParams();
@@ -51,7 +52,6 @@ const CourseReserve = ({ toggleTab }) => {
 
   const {
     data: courseGroups,
-    isLoading: courseGroupsLoading,
     error: courseGroupsError,
     refetch,
   } = useQuery({
@@ -67,7 +67,7 @@ const CourseReserve = ({ toggleTab }) => {
         .invalidateQueries("courseReserveList")
         .then(() => toast.success("رزرو تایید شد"));
     },
-    onError: () => toast.error("خطایی رخ داد"),
+    onError: (err) => toast.error(err.response.data.ErrorMessage[0]),
   });
 
   const { mutateAsync: deletionMutate } = useMutation({
@@ -211,22 +211,26 @@ const CourseReserve = ({ toggleTab }) => {
             <span style={{ fontSize: 24 }}>لطفا گروه را انتخاب کنید</span>
           </ModalHeader>
           <ModalBody>
-            <Select
-              theme={selectThemeColors}
-              isClearable={false}
-              className="react-select"
-              classNamePrefix="select"
-              options={courseGroups?.data.map((group, index) => ({
-                value: group.groupId,
-                label: group.groupName,
-                number: index + 1,
-              }))}
-              value={currentGroup}
-              onChange={(data) => {
-                setCurrentGroup(data);
-                console.log(data);
-              }}
-            />
+            {courseGroupsError ? (
+              <ErrorComponent />
+            ) : (
+              <Select
+                theme={selectThemeColors}
+                isClearable={false}
+                className="react-select"
+                classNamePrefix="select"
+                options={courseGroups?.data.map((group, index) => ({
+                  value: group.groupId,
+                  label: group.groupName,
+                  number: index + 1,
+                }))}
+                value={currentGroup}
+                onChange={(data) => {
+                  setCurrentGroup(data);
+                  console.log(data);
+                }}
+              />
+            )}
           </ModalBody>
           <ModalFooter>
             <Button
