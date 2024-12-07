@@ -31,6 +31,8 @@ import {
   rejectComment,
   replyToCourseComment,
 } from "../../../services/api/Comments";
+import SearchComponent from "../../common/SearchComponent";
+import ErrorComponent from "../../common/ErrorComponent";
 
 const schema = yup
   .object({
@@ -49,6 +51,7 @@ const schema = yup
 const CourseComments = () => {
   const { courseId } = useParams();
   const [commentId, setCommentId] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [basicModal, setBasicModal] = useState(false);
   const [centeredModal, setCenteredModal] = useState(false);
   const [repliesModal, setRepliesModal] = useState(false);
@@ -298,22 +301,36 @@ const CourseComments = () => {
   }
 
   if (error) {
-    return <span>خطا در دریافت اطلاعات</span>;
+    return <ErrorComponent />;
   }
 
   return (
     <>
+      <SearchComponent
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        width="40"
+      />
       <Card>
         <div className="react-dataTable user-view-account-projects">
           <DataTable
             noHeader
             responsive
             columns={columns}
-            data={data.data.sort(
-              (a, b) =>
-                new Date(b.insertDate).getTime() -
-                new Date(a.insertDate).getTime()
-            )}
+            data={data.data
+              .filter((item) => {
+                if (!searchTerm) {
+                  return item;
+                } else {
+                  const pattern = new RegExp(`${searchTerm}`, "i");
+                  return pattern.test(item.title) || pattern.test(item.author);
+                }
+              })
+              .sort(
+                (a, b) =>
+                  new Date(b.insertDate).getTime() -
+                  new Date(a.insertDate).getTime()
+              )}
             className="react-dataTable"
           />
         </div>

@@ -57,6 +57,7 @@ function CourseAssistanceListTable() {
   const [editStep, setEditStep] = useState(1);
   const [editObj, setEditObj] = useState({});
   const [assistanceId, setAssistanceId] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const {
     control,
@@ -206,8 +207,23 @@ function CourseAssistanceListTable() {
             responsive
             columns={columns}
             className="react-dataTable"
-            data={data?.data}
-            subHeaderComponent={<CourseAssistanceListHeader />}
+            data={data?.data.filter((item) => {
+              if (!searchTerm) {
+                return item;
+              } else {
+                const pattern = new RegExp(`${searchTerm}`, "i");
+                return (
+                  pattern.test(item.assistanceName) ||
+                  pattern.test(item.courseName)
+                );
+              }
+            })}
+            subHeaderComponent={
+              <CourseAssistanceListHeader
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+              />
+            }
           />
         </div>
       </Card>

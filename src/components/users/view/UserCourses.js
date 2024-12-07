@@ -5,9 +5,12 @@ import Avatar from "@components/avatar";
 import DataTable from "react-data-table-component";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { getUserById } from "../../../services/api/Users";
+import SearchComponent from "../../common/SearchComponent";
+import { useState } from "react";
 
 function UserCourses() {
   const { userId } = useParams();
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["userDetails"],
@@ -74,17 +77,31 @@ function UserCourses() {
   }
 
   return (
-    <Card>
-      <div className="react-dataTable user-view-account-projects">
-        <DataTable
-          noHeader
-          responsive
-          columns={columns}
-          data={data?.data.courses}
-          className="react-dataTable"
-        />
-      </div>
-    </Card>
+    <>
+      <SearchComponent
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        width="40"
+      />
+      <Card>
+        <div className="react-dataTable user-view-account-projects">
+          <DataTable
+            noHeader
+            responsive
+            columns={columns}
+            data={data?.data.courses.filter((item) => {
+              if (!searchTerm) {
+                return item;
+              } else {
+                const pattern = new RegExp(`${searchTerm}`, "i");
+                return pattern.test(item.title) || pattern.test(item.describe);
+              }
+            })}
+            className="react-dataTable"
+          />
+        </div>
+      </Card>
+    </>
   );
 }
 

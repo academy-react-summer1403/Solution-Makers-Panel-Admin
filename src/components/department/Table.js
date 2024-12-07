@@ -17,6 +17,7 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 
 function DepartmentListTable() {
   const [editId, setEditId] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [createOrEditModal, setCreateOrEditModal] = useState(false);
 
   const { data, isLoading, error } = useQuery({
@@ -90,13 +91,24 @@ function DepartmentListTable() {
           responsive
           columns={columns}
           className="react-dataTable"
-          data={data?.data}
+          data={data?.data.filter((item) => {
+            if (!searchTerm) {
+              return item;
+            } else {
+              const pattern = new RegExp(`${searchTerm}`, "i");
+              return (
+                pattern.test(item.depName) || pattern.test(item.buildingName)
+              );
+            }
+          })}
           subHeaderComponent={
             <DepartmentListCustomHeader
               editId={editId}
               setEditId={setEditId}
               createOrEditModal={createOrEditModal}
               setCreateOrEditModal={setCreateOrEditModal}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
             />
           }
         />

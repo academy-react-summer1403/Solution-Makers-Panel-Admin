@@ -22,9 +22,11 @@ import {
   getCourseGroups,
   submitCourseReserve,
 } from "../../services/api/Courses";
+import SearchComponent from "../common/SearchComponent";
 
 function ReserveListTable() {
   const [basicModal, setBasicModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [courseId, setCourseId] = useState("");
   const [teacherId, setTeacherId] = useState("");
   const [studentId, setStudentId] = useState("");
@@ -218,59 +220,73 @@ function ReserveListTable() {
   }
 
   return (
-    <Card className="overflow-hidden">
-      <div className="react-dataTable">
-        <DataTable
-          noHeader
-          subHeader
-          responsive
-          columns={columns}
-          className="react-dataTable"
-          data={data.data}
-          subHeaderComponent={
-            <h3 className="text-center w-100 py-1">لیست دوره های رزرو شده</h3>
-          }
-        />
-      </div>
-
-      <div className="basic-modal">
-        <Modal isOpen={basicModal} toggle={() => setBasicModal(!basicModal)}>
-          <ModalHeader toggle={() => setBasicModal(!basicModal)}>
-            <span style={{ fontSize: 24 }}>لطفا گروه را انتخاب کنید</span>
-          </ModalHeader>
-          <ModalBody>
-            <Select
-              theme={selectThemeColors}
-              isClearable={false}
-              className="react-select"
-              classNamePrefix="select"
-              options={courseGroups?.data.map((group, index) => ({
-                value: group.groupId,
-                label: group.groupName,
-                number: index + 1,
-              }))}
-              value={currentGroup}
-              onChange={(data) => setCurrentGroup(data)}
-            />
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              disabled={!currentGroup.value}
-              color="primary"
-              onClick={() =>
-                reserveCourseMutate({
-                  courseId: courseId,
-                  courseGroupId: currentGroup.value,
-                  studentId: studentId,
-                }).then(() => setBasicModal(!basicModal))
+    <>
+      <SearchComponent
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        width="30"
+      />
+      <Card className="overflow-hidden">
+        <div className="react-dataTable">
+          <DataTable
+            noHeader
+            subHeader
+            responsive
+            columns={columns}
+            className="react-dataTable"
+            data={data.data.filter((item) => {
+              if (!searchTerm) {
+                return item;
+              } else {
+                const pattern = new RegExp(`${searchTerm}`, "i");
+                return (
+                  pattern.test(item.studentName) ||
+                  pattern.test(item.courseName)
+                );
               }
-            >
-              ثبت
-            </Button>
-          </ModalFooter>
-        </Modal>
-      </div>
-    </Card>
+            })}
+          />
+        </div>
+
+        <div className="basic-modal">
+          <Modal isOpen={basicModal} toggle={() => setBasicModal(!basicModal)}>
+            <ModalHeader toggle={() => setBasicModal(!basicModal)}>
+              <span style={{ fontSize: 24 }}>لطفا گروه را انتخاب کنید</span>
+            </ModalHeader>
+            <ModalBody>
+              <Select
+                theme={selectThemeColors}
+                isClearable={false}
+                className="react-select"
+                classNamePrefix="select"
+                options={courseGroups?.data.map((group, index) => ({
+                  value: group.groupId,
+                  label: group.groupName,
+                  number: index + 1,
+                }))}
+                value={currentGroup}
+                onChange={(data) => setCurrentGroup(data)}
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                disabled={!currentGroup.value}
+                color="primary"
+                onClick={() =>
+                  reserveCourseMutate({
+                    courseId: courseId,
+                    courseGroupId: currentGroup.value,
+                    studentId: studentId,
+                  }).then(() => setBasicModal(!basicModal))
+                }
+              >
+                ثبت
+              </Button>
+            </ModalFooter>
+          </Modal>
+        </div>
+      </Card>
+    </>
   );
 }
 

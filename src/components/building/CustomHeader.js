@@ -21,6 +21,7 @@ import {
   updateBuilding,
 } from "../../services/api/Building";
 import moment from "moment";
+import SearchComponent from "../common/SearchComponent";
 
 const schema = yup.object({
   buildingName: yup.string().required("نام ساختمان را وارد کنید"),
@@ -38,6 +39,8 @@ function BuildingListCustomHeader({
   setEditId,
   createOrEditModal,
   setCreateOrEditModal,
+  searchTerm,
+  setSearchTerm,
 }) {
   const queryClient = useQueryClient();
 
@@ -112,7 +115,12 @@ function BuildingListCustomHeader({
 
   return (
     <>
-      <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75 d-flex justify-content-end">
+      <div className="invoice-list-table-header w-100 d-flex align-items-center justify-content-between">
+        <SearchComponent
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          width="30"
+        />
         <Button
           color="primary"
           onClick={() => setCreateOrEditModal(!createOrEditModal)}

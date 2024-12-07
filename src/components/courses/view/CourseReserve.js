@@ -30,9 +30,11 @@ import {
   submitCourseReserve,
 } from "../../../services/api/Courses";
 import ErrorComponent from "../../common/ErrorComponent";
+import SearchComponent from "../../common/SearchComponent";
 
 const CourseReserve = ({ toggleTab }) => {
   const { courseId } = useParams();
+  const [searchTerm, setSearchTerm] = useState("");
   const [basicModal, setBasicModal] = useState(false);
   const [studentId, setStudentId] = useState("");
   const [currentGroup, setCurrentGroup] = useState({
@@ -193,13 +195,25 @@ const CourseReserve = ({ toggleTab }) => {
 
   return (
     <>
+      <SearchComponent
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        width="40"
+      />
       <Card>
         <div className="react-dataTable user-view-account-projects">
           <DataTable
             noHeader
             responsive
             columns={columns}
-            data={data?.data}
+            data={data?.data.filter((item) => {
+              if (!searchTerm) {
+                return item;
+              } else {
+                const pattern = new RegExp(`${searchTerm}`, "i");
+                return pattern.test(item.studentName);
+              }
+            })}
             className="react-dataTable"
             sortIcon={<ChevronDown size={10} />}
           />

@@ -20,6 +20,7 @@ import Select from "react-select";
 import { addTerm, getTermById, updateTerm } from "../../services/api/Term";
 import { getAllDepartments } from "../../services/api/Department";
 import moment from "moment";
+import SearchComponent from "../common/SearchComponent";
 
 const schema = yup.object().shape({
   termName: yup.string().required("نام ترم را وارد کنید"),
@@ -46,6 +47,8 @@ function TermsListCustomHeader({
   setEditId,
   createOrEditModal,
   setCreateOrEditModal,
+  searchTerm,
+  setSearchTerm,
 }) {
   const queryClient = useQueryClient();
 
@@ -131,7 +134,12 @@ function TermsListCustomHeader({
 
   return (
     <>
-      <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75 d-flex justify-content-end">
+      <div className="invoice-list-table-header w-100 d-flex align-items-center justify-content-between">
+        <SearchComponent
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          width="30"
+        />
         <Button
           color="primary"
           onClick={() => setCreateOrEditModal(!createOrEditModal)}

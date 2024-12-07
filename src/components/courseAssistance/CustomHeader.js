@@ -6,8 +6,9 @@ import UsersListTable from "../users/list/Table";
 import CoursesListTable from "../courses/list/Table";
 import Swal from "sweetalert2";
 import { addAssistanceForCourse } from "../../services/api/Assistance";
+import SearchComponent from "../common/SearchComponent";
 
-function CourseAssistanceListHeader() {
+function CourseAssistanceListHeader({ searchTerm, setSearchTerm }) {
   const [step, setStep] = useState(1);
   const [obj, setObj] = useState({});
   const [modal, setModal] = useState(false);
@@ -47,7 +48,12 @@ function CourseAssistanceListHeader() {
 
   return (
     <>
-      <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75 d-flex justify-content-end">
+      <div className="invoice-list-table-header w-100 d-flex align-items-center justify-content-between">
+        <SearchComponent
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          width="30"
+        />
         <Button color="primary" onClick={() => setModal(!modal)}>
           افزودن پشتیبان جدید
         </Button>

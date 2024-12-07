@@ -18,6 +18,7 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 function TechnologiesTable() {
   const [editId, setEditId] = useState("");
   const [createOrEditTechModal, setCreateOrEditTechModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["techsList"],
@@ -90,13 +91,22 @@ function TechnologiesTable() {
           responsive
           columns={columns}
           className="react-dataTable"
-          data={data?.data}
+          data={data?.data.filter((item) => {
+            if (!searchTerm) {
+              return item;
+            } else {
+              const pattern = new RegExp(`${searchTerm}`, "i");
+              return pattern.test(item.techName) || pattern.test(item.describe);
+            }
+          })}
           subHeaderComponent={
             <TechsListCustomHeader
               editId={editId}
               setEditId={setEditId}
               createOrEditTechModal={createOrEditTechModal}
               setCreateOrEditTechModal={setCreateOrEditTechModal}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
             />
           }
         />

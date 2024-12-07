@@ -20,6 +20,7 @@ import {
   getStatusById,
 } from "../../services/api/Status";
 import toast from "react-hot-toast";
+import SearchComponent from "../common/SearchComponent";
 
 const schema = yup.object({
   statusName: yup.string().required("نام وضعیت را وارد کنید"),
@@ -32,6 +33,8 @@ function StatusListCustomHeader({
   setEditId,
   createOrEditModal,
   setCreateOrEditModal,
+  searchTerm,
+  setSearchTerm,
 }) {
   const queryClient = useQueryClient();
 
@@ -102,7 +105,12 @@ function StatusListCustomHeader({
 
   return (
     <>
-      <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75 d-flex justify-content-end">
+      <div className="invoice-list-table-header w-100 d-flex align-items-center justify-content-between">
+        <SearchComponent
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          width="30"
+        />
         <Button
           color="primary"
           onClick={() => setCreateOrEditModal(!createOrEditModal)}

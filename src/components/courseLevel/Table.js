@@ -17,6 +17,7 @@ import { getAllCourseLevels } from "../../services/api/CourseLevel";
 function CourseLevelListTable() {
   const [editId, setEditId] = useState("");
   const [createOrEditModal, setCreateOrEditModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["courseLevelsList"],
@@ -79,13 +80,22 @@ function CourseLevelListTable() {
           responsive
           columns={columns}
           className="react-dataTable"
-          data={data?.data}
+          data={data?.data.filter((item) => {
+            if (!searchTerm) {
+              return item;
+            } else {
+              const pattern = new RegExp(`${searchTerm}`, "i");
+              return pattern.test(item.levelName);
+            }
+          })}
           subHeaderComponent={
             <CourseLevelListHeader
               editId={editId}
               setEditId={setEditId}
               createOrEditModal={createOrEditModal}
               setCreateOrEditModal={setCreateOrEditModal}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
             />
           }
         />

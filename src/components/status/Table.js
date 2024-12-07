@@ -18,6 +18,7 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 function StatusListTable() {
   const [editId, setEditId] = useState("");
   const [createOrEditModal, setCreateOrEditModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["statusList"],
@@ -90,13 +91,24 @@ function StatusListTable() {
           responsive
           columns={columns}
           className="react-dataTable"
-          data={data?.data}
+          data={data?.data.filter((item) => {
+            if (!searchTerm) {
+              return item;
+            } else {
+              const pattern = new RegExp(`${searchTerm}`, "i");
+              return (
+                pattern.test(item.statusName) || pattern.test(item.describe)
+              );
+            }
+          })}
           subHeaderComponent={
             <StatusListCustomHeader
               editId={editId}
               setEditId={setEditId}
               createOrEditModal={createOrEditModal}
               setCreateOrEditModal={setCreateOrEditModal}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
             />
           }
         />

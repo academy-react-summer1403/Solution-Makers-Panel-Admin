@@ -17,6 +17,7 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 
 function TermsListTable() {
   const [editId, setEditId] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [createOrEditModal, setCreateOrEditModal] = useState(false);
 
   const { data, isLoading, error } = useQuery({
@@ -123,13 +124,24 @@ function TermsListTable() {
           responsive
           columns={columns}
           className="react-dataTable"
-          data={data?.data}
+          data={data?.data.filter((item) => {
+            if (!searchTerm) {
+              return item;
+            } else {
+              const pattern = new RegExp(`${searchTerm}`, "i");
+              return (
+                pattern.test(item.termName) || pattern.test(item.departmentName)
+              );
+            }
+          })}
           subHeaderComponent={
             <TermsListCustomHeader
               editId={editId}
               setEditId={setEditId}
               createOrEditModal={createOrEditModal}
               setCreateOrEditModal={setCreateOrEditModal}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
             />
           }
         />

@@ -30,6 +30,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import moment from "moment";
 import toast from "react-hot-toast";
+import SearchComponent from "../common/SearchComponent";
 
 const schema = yup.object({
   worktitle: yup
@@ -48,6 +49,7 @@ const schema = yup.object({
 
 function AssistanceWorkListTable() {
   const [editId, setEditId] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [assistanceId, setAssistanceId] = useState("");
   const [createOrEditModal, setCreateOrEditModal] = useState(false);
   const queryClient = useQueryClient();
@@ -151,6 +153,11 @@ function AssistanceWorkListTable() {
 
   return (
     <>
+      <SearchComponent
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        width="30"
+      />
       <Card className="overflow-hidden">
         <div className="react-dataTable">
           <DataTable
@@ -158,7 +165,14 @@ function AssistanceWorkListTable() {
             responsive
             columns={columns}
             className="react-dataTable"
-            data={data?.data}
+            data={data?.data.filter((item) => {
+              if (!searchTerm) {
+                return item;
+              } else {
+                const pattern = new RegExp(`${searchTerm}`, "i");
+                return pattern.test(item.assistanceName);
+              }
+            })}
           />
         </div>
       </Card>

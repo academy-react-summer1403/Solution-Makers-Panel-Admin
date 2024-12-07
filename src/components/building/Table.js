@@ -23,6 +23,7 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 function BuildingListTable() {
   const [editId, setEditId] = useState("");
   const [createOrEditModal, setCreateOrEditModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useQuery({
@@ -160,13 +161,24 @@ function BuildingListTable() {
           responsive
           columns={columns}
           className="react-dataTable"
-          data={data?.data}
+          data={data?.data.filter((item) => {
+            if (!searchTerm) {
+              return item;
+            } else {
+              const pattern = new RegExp(`${searchTerm}`, "i");
+              return (
+                pattern.test(item.buildingName) || pattern.test(item.floor)
+              );
+            }
+          })}
           subHeaderComponent={
             <BuildingListCustomHeader
               editId={editId}
               setEditId={setEditId}
               createOrEditModal={createOrEditModal}
               setCreateOrEditModal={setCreateOrEditModal}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
             />
           }
         />

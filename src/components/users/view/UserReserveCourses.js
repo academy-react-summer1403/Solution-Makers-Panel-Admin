@@ -5,9 +5,12 @@ import DataTable from "react-data-table-component";
 import { Eye } from "react-feather";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { getUserById } from "../../../services/api/Users";
+import { useState } from "react";
+import SearchComponent from "../../common/SearchComponent";
 
 function UserReserveCourses() {
   const { userId } = useParams();
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["userDetails"],
@@ -76,21 +79,35 @@ function UserReserveCourses() {
   }
 
   if (error) {
-    return <span>خطا در دریافت اطلاعات</span>
+    return <span>خطا در دریافت اطلاعات</span>;
   }
 
   return (
-    <Card>
-      <div className="react-dataTable user-view-account-projects">
-        <DataTable
-          noHeader
-          responsive
-          columns={columns}
-          data={data?.data.coursesReseves}
-          className="react-dataTable"
-        />
-      </div>
-    </Card>
+    <>
+      <SearchComponent
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        width="40"
+      />
+      <Card>
+        <div className="react-dataTable user-view-account-projects">
+          <DataTable
+            noHeader
+            responsive
+            columns={columns}
+            data={data?.data.coursesReseves.filter((item) => {
+              if (!searchTerm) {
+                return item;
+              } else {
+                const pattern = new RegExp(`${searchTerm}`, "i");
+                return pattern.test(item.courseName);
+              }
+            })}
+            className="react-dataTable"
+          />
+        </div>
+      </Card>
+    </>
   );
 }
 
