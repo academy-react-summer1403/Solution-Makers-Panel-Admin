@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 function AllCoursesCustomHeader({
   searchTerm,
   setSearchTerm,
+  setCurrentPage,
   currentStatus,
   setCurrentStatus,
   refetch,
@@ -52,6 +53,7 @@ function AllCoursesCustomHeader({
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyUp={(e) => {
                 if (e.key == "Enter") {
+                  setCurrentPage(1);
                   refetch();
                 }
               }}

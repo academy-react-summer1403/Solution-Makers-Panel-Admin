@@ -69,6 +69,9 @@ const CoursesListTable = ({
     onSuccess: () => {
       queryClient.invalidateQueries(["courses", "nums"]);
     },
+    onError: () => {
+      toast.error("error");
+    },
   });
 
   const renderCourse = (row) => {
@@ -486,6 +489,7 @@ const CoursesListTable = ({
             <AllCoursesCustomHeader
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
+              setCurrentPage={setCurrentPage}
               currentStatus={currentStatus}
               setCurrentStatus={setCurrentStatus}
               refetch={refetch}

@@ -54,6 +54,12 @@ export default [
         navLink: "/reserve-list",
       },
       {
+        id: "TeacherCourses",
+        title: "لیست دوره های استاد",
+        icon: <Circle size={12} />,
+        navLink: "/teacher-courses",
+      },
+      {
         id: "AddNewCourse",
         title: "افزودن دوره جدید",
         icon: <Circle size={12} />,
